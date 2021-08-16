@@ -16,9 +16,13 @@ import { withRouter, Switch, Route, } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 
 function App(props) {
+  useEffect(() => {
+    console.log('app props');
+    console.log(props.routes);
+  }, [])
   return (
     <ConfigProvider locale={zh_CN}>
-      <div className="App">
+      <div className="App" style={{position: 'relative'}}>
         {renderRoutes(props.routes)}
         {/* <Login/> */}
         {/* <Search/> */}
@@ -27,6 +31,12 @@ function App(props) {
         {/* <MusicSlider /> */}
         {/* <Home/> */}
         {/* <RouterOutlet/> */}
+        <div style={{height: 100}}>
+
+        </div>
+        <div style={{position: 'fixed', width: '100%', height: 100, backgroundColor: 'blue', bottom: '0', left: 0, boxShadow: '0 0 5px #ccc'}}>
+        <MusicSlider/>
+        </div>
       </div>
     </ConfigProvider>
   );

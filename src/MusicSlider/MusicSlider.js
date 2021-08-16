@@ -249,14 +249,13 @@ export default function MusicSlider(props) {
       <audio
         ref={ownAudioRef}
         id="audio"
-        controls
         src={musicPath}
         onCanPlay={handleAudioCanPlay}
         onTimeUpdate={handleAudioUpdate}
       ></audio>
-      <button onClick={handleSliderPause}>开始播放</button>
+      {/* <button onClick={handleSliderPause}>开始播放</button>
       <button onClick={switchSongs}>切换歌曲</button>
-      <button onClick={mutedAudio}>静音</button>
+      <button onClick={mutedAudio}>静音</button> */}
       <div className="audioSlider">
         <AudioSlider
           value={currentAudioTime}

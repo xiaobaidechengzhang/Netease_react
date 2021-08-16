@@ -4,6 +4,7 @@ import HTTPUtils from "../../HTTPUtils/HTTPUtils";
 import "./PersonalSuggest.less";
 import PlayImg from "../../images/music/play-active.png";
 import Carousel from "../../widgets/Carousel/Carousel";
+import { withRouter } from "react-router";
 /**
  *
  *
@@ -11,7 +12,7 @@ import Carousel from "../../widgets/Carousel/Carousel";
  * @param {*} props
  * @return {*}
  */
-export default function PersonalSuggest(props) {
+function PersonalSuggest(props) {
   const [songsData, setSongsData] = useState([]); //推荐音乐
   const [perPlaylists, setPerPlaylists] = useState([]); //推荐歌单数据
   const [videoGroupList, setVideoGroupList] = useState([]); //视频标签列表数据
@@ -134,6 +135,15 @@ export default function PersonalSuggest(props) {
     // let data = await HTTPUtils.video_timeline_all();
   };
 
+
+  /**
+   * 进入歌单详情
+   */
+  const navigateDetail = (item) => {
+    props.history.push('/playlist/'+item.id)
+  }
+
+
   /**
    * 歌单系列接口--------------------------------------------||
    */
@@ -198,6 +208,7 @@ export default function PersonalSuggest(props) {
                   className="playlistItem min30PlaylistItem"
                   // onMouseOver={() => playlistOver(item.id, 1)}
                   // onMouseOut={() => playlistOver(item.id, 2)}
+                  onClick={() => navigateDetail(item)}
                 >
                   <div className="playlistItemContent">
                     <img
@@ -331,3 +342,5 @@ export default function PersonalSuggest(props) {
     </div>
   );
 }
+
+export default withRouter(PersonalSuggest)

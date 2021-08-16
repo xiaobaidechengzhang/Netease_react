@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Artists.less";
 import HTTPUtils from "../../HTTPUtils/HTTPUtils";
+import { withRouter } from "react-router";
 
-export default function Artists(props) {
+function Artists(props) {
   const artistsRef = useRef();
   const [types, setTypes] = useState([
     //歌手筛选分类
@@ -135,6 +136,19 @@ export default function Artists(props) {
       }
     })
   }, [artistsData])
+
+
+  /**
+   * 歌手列表系列事件
+   */
+  const navigateDetail = (item) => {
+    console.log(props);
+    console.log(item);
+    props.history.push('/artist/' + item.id)
+  }
+
+
+  //滚动加载图片
   window.onscroll = () => {
     if(artistsRef) {
       let imgs = document.querySelectorAll('.artistsListItemImg');
@@ -228,6 +242,7 @@ export default function Artists(props) {
               <div
                 key={item.id+'_'+index}
                 className='artistsListItem'
+                onClick={() => navigateDetail(item)}
               >
                 <div className='artistsListItemImgCon'>
                   <img
@@ -249,3 +264,5 @@ export default function Artists(props) {
     </div>
   );
 }
+
+export default withRouter(Artists)

@@ -4,8 +4,9 @@ import "./Toplist.less";
 import RightImg from "../../images/Toplist/right.png";
 import PauseImg from "../../images/Playlist/play.png";
 import PlayHoverImg from "../../images/Playlist/play_hover.png";
+import { withRouter } from "react-router";
 
-export default function Toplist(props) {
+function Toplist(props) {
   const [allToplist, setAllToplist] = useState([]); //所有排行榜数据
   const [topFiveData, setTopFiveData] = useState([]); //要显示的top5数据, 以及每个排行榜的top5歌曲
   /**
@@ -44,6 +45,17 @@ export default function Toplist(props) {
     }
     setTopFiveData(arr)
   }, [allToplist]);
+
+
+  /**
+   * 进入榜单详情
+   */
+  const navigateDetail = (item) => {
+    console.log('navigate detail')
+    console.log(item);
+    props.history.push("/playlist/"+item.id)
+  }
+
   //页面加载时, 执行一次获取所有排行榜数据
   useEffect(async () => {
     await getAllToplist();
@@ -86,7 +98,7 @@ export default function Toplist(props) {
                         tabIndex='1'
                         className={`topFiveItem ${
                           zIndex % 2 == 0 ? "topFiveItemIndex" : ""
-                        }`}
+                        }`} 
                       >
                         <div>
                           <span
@@ -107,7 +119,7 @@ export default function Toplist(props) {
                     );
                   })}
                 </div>
-                <div className='topfiveViewRightMore'>
+                <div className='topfiveViewRightMore' onClick={() => navigateDetail(item)}>
                   <span>查看全部</span>
                   <img src={RightImg} />
                 </div>
@@ -121,7 +133,7 @@ export default function Toplist(props) {
       >
         {allToplist.map((item, index) => {
           return (
-            <div key={item.id}>
+            <div key={item.id} onClick={() => navigateDetail(item)}>
               <div className="toplistItem">
                 <img className="toplistItemImg" src={item.coverImgUrl} />
                 <div className="toplistItemRight">
@@ -142,3 +154,5 @@ export default function Toplist(props) {
     </div>
   );
 }
+
+export default withRouter(Toplist)

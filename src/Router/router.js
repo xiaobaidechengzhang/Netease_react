@@ -6,6 +6,7 @@ import SubHome from '../Home/SubHome/SubHome';
 import Playlist from '../Home/Playlist/Playlist';
 import PlaylistDetail from '../Home/Playlist/PlaylistDetail/PlaylistDetail';
 import Test from '../Home/Test/Test';
+import ArtistDetail from '../Home/Artists/ArtistDetail/ArtistDetail'
 
 
 const router = new Router({
@@ -63,6 +64,11 @@ const routes = [
         exact: true,
         component: Test,
     },
+    {
+        path: '/artist/:id',
+        exact: true,
+        component: ArtistDetail
+    }
 ]
 
 export default routes;

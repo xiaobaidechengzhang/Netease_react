@@ -25,6 +25,7 @@ export default function Home(props) {
     const [homeTags, setHomeTags] = useState(['个性推荐', '歌单', '排行榜', '歌手', '最新音乐']);       //首页tags
     const [activeHomeTag, setActiveHomeTag] = useState('0');            //当前active的home tag
     useEffect(() => {
+        console.log(props.route.routes);
         let pathname = props.location.pathname;
         setActiveHomeTag(paths[pathname])
     },)

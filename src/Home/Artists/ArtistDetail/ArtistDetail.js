@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams, withRouter } from 'react-router-dom'
 import "./ArtistDetail.less";
 import HTTPUtils from "@/HTTPUtils/HTTPUtils";
 import SubPng from "@/images/NewestSong/sub.png";
@@ -16,7 +17,9 @@ import UpPng from "@/images/Playlist/up.png";
 
 const { exchangeTime, exchagneDuration } = require("@/Utils/ExchangeTime");
 
-export default function Test(props) {
+function ArtistDetail(props) {
+  //歌手数据
+  const { id } = useParams();
   //歌手详情中 tabs 选中哪个标签  1->4; 专辑->相似歌手
   const [tabIndex, setTabIndex] = useState("1");
   //专辑列表浏览模式--1->3; 图列模式->列表模式->大图模式
@@ -68,7 +71,7 @@ export default function Test(props) {
   //事件---获取歌手详情数据 例如id='3684';
   const getArtistDetail = async () => {
     let params = {
-      id: "3684",
+      id: id,
     };
     let data = await HTTPUtils.artist_detail(params);
     setArtistDetailData(data.data?.artist);
@@ -77,7 +80,7 @@ export default function Test(props) {
   //事件--获取歌手详情中相似歌手 例如id='3684'
   const getSimiArtist = async () => {
     let params = {
-      id: "3684",
+      id: id,
     };
     let data = await HTTPUtils.simi_artist(params);
     setSimiArtistData(data.artists);
@@ -86,7 +89,7 @@ export default function Test(props) {
   //事件--获取歌手详细描述
   const getArtistDetailDesc = async () => {
     let params = {
-      id: "3684",
+      id: id,
     };
     let data = await HTTPUtils.artist_desc(params);
     setArtistDetailDest(data);
@@ -97,8 +100,9 @@ export default function Test(props) {
     if (!hasMVMore) {
       return false;
     }
+    console.log(props);
     let params = {
-      id: "3684",
+      id: id,
       limit: "10",
       offset: mvsOffset * 10,
     };
@@ -112,11 +116,12 @@ export default function Test(props) {
 
   //事件--获取歌手专辑列表
   const getArtistAlbum = async () => {
+    //如果没有更多数据, 直接返回, 不进行操作
     if (!hasMore) {
       return false;
     }
     let params = {
-      id: "3684",
+      id: id,
       limit: "5",
       offset: albumsOffset * 5,
     };
@@ -204,7 +209,7 @@ export default function Test(props) {
       let scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop;
       let clientHeight = window.innerHeight;
-      let clientScrollHeight = artistDetailRef.current.scrollHeight;
+      let clientScrollHeight = artistDetailRef.current && artistDetailRef.current.scrollHeight;
       if (scrollTop + clientHeight > clientScrollHeight - 100) {
         setAlbumOffset((offset) => offset + 1);
       }
@@ -672,3 +677,5 @@ export default function Test(props) {
     </div>
   );
 }
+
+export default withRouter(ArtistDetail)

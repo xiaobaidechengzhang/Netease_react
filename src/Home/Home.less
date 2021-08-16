@@ -1,0 +1,22 @@
+.catHeader {
+    height: 60px;
+    margin: 20px;
+    text-align: center;
+    .catHeaderItem {
+        margin: 10px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: 1px solid gray;
+        text-align: center;
+        display: inline-block;
+        &:hover {
+            cursor: pointer;
+            border-color: lighten(red, 10%);
+            color: lighten(red, 10%);
+        }
+    }
+    .activeCatHeaderItem {
+        border-color: red;
+        color: red;
+    }
+}

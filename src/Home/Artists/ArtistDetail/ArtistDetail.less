@@ -1,0 +1,395 @@
+@commonColor: #e03a24;
+@commonHoverColor: #f09a9a;
+@commonBorderColor: #e1dede;
+@commonGrayColor: #818181;
+@commonIndexColor: #e6e4e4;
+@commonActiveColor: #a7a5a5;
+@maleBackColor: #C0F3FF;
+@femaleBackColor: #FFCDE8;
+ul, li, p {
+  padding: 0;
+  margin: 0;
+}
+.artist-detail {
+  padding: 10px;
+  .headerPadding5 {
+    padding: 5px 10px;
+  }
+  .fongsize20 {
+    font-size: 20px;
+  }
+  .backGray {
+    background-color: @commonIndexColor;
+  }
+  .canSelectItem:focus {
+    background-color: @commonActiveColor;
+  }
+  .img200 {
+    width: 95%;
+    max-width: 280px;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  .img150 {
+    width: 80%;
+    max-width: 250px;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  .img15 {
+    width: 15px;
+    height: 15px;
+    border-radius: 2px;
+    object-fit: cover;
+  }
+  .artist-detail-header {
+    position: relative;
+    height: auto;
+    .header-left {
+      position: absolute;
+      width: 15%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      padding: 10px;
+    }
+    .header-right {
+      position: inherit;
+      width: 85%;
+      min-height: 300px;
+      left: 15%;
+      padding: 10px;
+      line-height: 30px;
+      .header-right-title {
+        font-weight: bold;
+        font-size: 20px;
+      }
+      .header-right-subtitle {
+      }
+      .defineButton {
+        outline: none;
+        background-color: white;
+        border: 1px solid @commonBorderColor;
+        margin: 20px 0px;
+        padding: 5px 20px;
+        border-radius: 20px;
+      }
+      .right-line {
+
+        .right-line-item {
+          display: inline-block;
+          margin: 10px 20px;
+          &:nth-child(1) {
+            margin-left: 0px;
+          }
+        }
+      }
+      .lineheight50 {
+        line-height: 50px;
+      }
+      .header-right-row {
+        min-height: 60px;
+        .border-text {
+          border: 1px solid @commonColor;
+          color: @commonColor;
+        }
+        .playlist-name {
+          font-weight: bold;
+          font-size: 20px;
+        }
+      }
+      .playlist-des {
+        position: relative;
+      }
+    }
+  }
+  .artist-detail-tabs-container {
+    position: relative;
+    .artist-detail-tabs {
+      .artist-detail-tab {
+        display: inline-block;
+        font-size: 20px;
+        margin: 10px 20px;
+        padding: 5px 0;
+        &:first-child {
+          margin-left: 0;
+          padding-left: 0;
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .artist-detail-tab-active {
+        font-weight: bold;
+        border-bottom: 5px solid @commonColor;
+        
+      }
+    }
+    .right-imgs {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      .right-img-container {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        margin: 0 10px;
+        padding: 5px;
+        border-radius: 5px;
+        &:hover {
+          cursor: pointer;
+          background-color: @commonBorderColor;
+        }
+        .right-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .right-img-container-active {
+        background-color: @commonGrayColor;
+      }
+      
+    }
+  }
+  .artist-detail-lists {
+    .flex6 {
+      flex: 6
+    }
+    .flex4 {
+      flex: 4;
+    }
+    .flex2 {
+      flex: 2;
+    }
+    .txtCenter {
+      text-align: center;
+    }
+    .txtLightGray {
+      color: @commonGrayColor;
+    }
+    .txtRed {
+      color: @commonColor;
+    }
+    .borderRedColor {
+      border: 1px solid @commonColor;
+      border-radius: 5px;
+    }
+    .img15 {
+      width: 15px;
+      height: 15px;
+      border-radius: 2px;
+      object-fit: cover;
+    }
+    .list-right {
+      overflow: hidden;
+      .list-right-tabs {
+        .list-right-tab {
+          display: inline-block;
+          margin: 0 20px 10px;
+          &:first-child {
+            margin-left: 0;
+          }
+        }
+        .font-weight-20 {
+          font-weight: bold;
+          font-size: 20px;
+        }
+      }
+      .content-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        min-height: 60px;
+        .content-header-item {
+          height: 100%;
+          line-height: 60px;
+          .item-flex {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            .header-item-right {
+              display: flex; 
+              flex-direction: row; 
+              flex-wrap: wrap; 
+              flex: 1; 
+              line-height: 25px;
+            }
+            .item-flex-item {
+              min-width: 30px;
+              text-align: center;
+              margin: 0 5px;
+            }
+            .clickItem {
+              cursor: pointer;
+              &:hover {
+                color: @commonHoverColor;
+                border: 1px solid @commonHoverColor;
+              }
+            }
+          }
+        }
+      }
+    }
+    .list-right-750 {
+      max-height: 720px;
+    }
+    .list-right-height-auto {
+      height: auto;
+    }
+    .picmodal-lists {
+      .picmodal-list-item {
+        width: 20%;
+        display: inline-block;
+        min-width: 20%;
+        max-width: 100%;
+        height: 350px;
+        padding: 20px;
+        .picmodal-list-item-container {
+          width: 100%;
+          height: 300px;
+          .list-item-img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 20px;
+          }
+          .list-item-title {
+            font-size: 20px;
+            margin: 5px 0;
+            font-weight: 700;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+          .list-item-subtitle {
+            color: @commonGrayColor;
+            margin: 5px 0;
+          }
+        }
+      }
+    }
+    .listModal-lists {
+      .listModal-list-item {
+        height: 120px;
+        padding: 10px 30px;
+        .listModal-list-item-container {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
+          align-items: center;
+          .list-item{
+            flex: 1;
+            .list-item-img {
+              width: 100px;
+              height: 100px;
+              border-radius: 10px;
+              object-fit: cover;
+            }
+            .list-item-center-title {
+              text-align: center;
+            }
+          }
+          .list-item-left {
+            .list-item-left-title {
+              display: inline-block;
+              padding: 0 20px
+            }
+          }
+        }
+      }
+    }
+  }
+  .mv-lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    .mv-list {
+      display: inline-block;
+      min-width: 20%;
+      max-width: 100%;
+      height: 300px;
+      padding: 20px;
+      margin: 10px 0;
+      .mv-list-item-container {
+        width: 100%;
+        height: 100%;
+        .mv-list-item {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          .list-item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+          }
+          .list-item-count {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            color: white;
+          }
+          .list-item-time {
+            position: absolute;
+            right: 10px;
+            bottom: 5px;
+            color: white;
+          }
+        }
+        .mv-list-item-name {
+          width: 100%;
+          height: 30px;
+          margin: 5px 0;
+          font-size: 20px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+  .detail-desc {
+    .detail-desc-jianjie {
+      padding-left: 20px;
+      border-left: 5px solid @commonColor;
+    }
+    .detail-desc-title {
+      height: 30px;
+      line-height: 30px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .desc-jianjie-content {
+      font-size: 17px;
+      line-height: 30px;
+    }
+    .jianjie-indent-content {
+      text-indent: 2em;
+    }
+  }
+  .similar-artist-lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    .similar-artist-list {
+      padding: 20px;
+      height: 380px;
+      .list-item {
+        width: 100%;
+        height: 100%;
+        .list-item-img {
+          max-width: 310px;
+          max-height: 310px;
+          object-fit: cover;
+          border-radius: 10px;
+        }
+        .list-item-title {
+          margin: 10px;
+        }
+      }
+    }
+  }
+}

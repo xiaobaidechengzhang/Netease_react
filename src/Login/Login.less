@@ -1,0 +1,70 @@
+@netColor: #C20C0C;
+.login {
+    background-image: url('../images/login.jpg');
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    .ant-form-item-label>label {
+        font-weight: 500;
+        height: 50px;
+        font-size: 20px;
+    }
+    .loginContent {
+        width: 40vw;
+        height: 50vh;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50px;
+        box-shadow: 0 0 30px gray;
+        position: relative;
+        .ant-select-selector {
+            height: 50px;
+            .ant-select-selection-item {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+        .closeBtn {
+            position: absolute;
+            right: 30px;
+            top: 30px;
+            border: 1px solid transparent !important;
+            font-size: 20px;
+            color: @netColor;
+            &:hover {
+                .closeImg {
+                    animation: rotateBtn 0.2s linear;
+                    animation-fill-mode: forwards;
+                    transform-origin: center;
+                    -webkit-transform-origin: center;
+                    -moz-transform-origin: center;
+                    -o-transform-origin: center;
+                }
+            }
+        }
+        .subBtn {
+            width: 300px;
+            height: 40px;
+            margin-top: 30px;
+            background-color: @netColor;
+            border: 1px solid transparent !important;
+        }
+    }
+}
+@keyframes rotateBtn {
+    from {
+        transform: rotate(0deg) scale(1);
+    }
+    to {
+        transform: rotate(180deg) scale(1.5);
+    }
+}

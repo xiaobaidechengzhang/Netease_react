@@ -1,0 +1,68 @@
+.artists {
+  .itemOptions {
+    min-height: 50px;
+    position: relative;
+    .itemOptionsRowLeft {
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width: 50px;
+      line-height: 50px;
+      text-align: center;
+    }
+    .itemOptionsRowRight {
+      position: inherit;
+      left: 50px;
+      top: 0;
+    }
+    .itemOptionsRow {
+      min-height: 50px;
+      height: 100%;
+      margin: 10px 0;
+      max-width: 90%;
+      display: inline-block;
+      overflow: hidden;
+      .artistItemContainer {
+        margin: 10px 0;
+        display: inline-block;
+        .artistItem {
+          min-width: 80px;
+          padding: 5px 10px;
+          display: inline-block;
+          text-align: center;
+          &:hover {
+            cursor: pointer;
+            background-color: #FDF5F5;
+            border-radius: 10px;
+          }
+        }
+        .activeItem {
+          color: #F0688A;
+          background-color: #FDF5F5;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+  .artistsList {
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr; 
+    row-gap: 20px; 
+    column-gap: 20px;
+    .artistsListItem {
+      display: inline-block;
+      min-height: 200px;
+      .artistsListItemImgCon {
+        height: 90%;
+        .artistsListItemImg {
+          width: 100%; 
+          height: 100%; 
+          object-fit: cover;
+        }
+      }
+      .artistsListItemName {
+        padding: 10px 0;
+      }
+    }
+  }
+}

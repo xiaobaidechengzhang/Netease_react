@@ -1,0 +1,66 @@
+/**
+    @hoverColor: 元素hover时的背景颜色;
+    @backColor: 基本背景颜色
+    .p_no_pad: 元素p设置margin padding 为0
+*/
+@hoverColor: #E5E5E5;
+@backColor: #EC4141;
+.p_no_pad {
+    padding: 0;
+    margin: 0;
+    &:hover {
+        background-color: @hoverColor;
+        cursor: pointer;
+        color: @backColor;
+    }
+}
+.header {
+    background-color: @backColor;
+    color: white;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    .header_search {
+        width: 350px;
+        height: 40px;
+        position: relative;
+        .header_search_list {
+            position: absolute;
+            top: 40px;
+            width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+            left: 0;
+            z-index: 10;
+            background-color: white;
+            border: 1px solid gainsboro;
+            color: black;
+            display: none;
+            border-radius: 10px;
+            .header_search_list_item {
+                width: 100%;
+                min-height: 40px;
+                .hot_arr_item {
+                    &:nth-child(2n) {
+                        background-color: #E5E5E5;
+                    }
+                }
+                .p_line_height {
+                    line-height: 40px;
+                }
+                .p_center {
+                    border-right: 1px solid gray;
+                    padding: 0 10px; 
+                    background-color: white; 
+                    display: flex; 
+                    align-items: center; margin: 0;
+                }
+            }
+        }
+        .header_search_list_active {
+            display: block;
+        }
+    }
+}

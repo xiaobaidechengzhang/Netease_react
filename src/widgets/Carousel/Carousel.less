@@ -1,0 +1,154 @@
+.allT {
+    width: 44.45%; 
+    height: 80%; 
+    background-color: #9FEAF9; 
+    margin: 10px; 
+    position: absolute;
+    left: 27.78%;
+    bottom: -4%; 
+    z-index: 5;
+    box-shadow: 0 0 10px gray;
+}
+.allT1 {
+    width: 44.45%; 
+    height: 80%; 
+    background-color: red; 
+    margin: 10px; 
+    position: absolute;
+    left: 0px;
+    bottom: 8%;
+}
+.allT2 {
+    width: 44.45%; 
+    height: 80%; 
+    background-color: blue; 
+    margin: 10px; 
+    position: absolute;
+    left: 53%;
+    bottom: 8%;
+    
+}
+.aniDiv { 
+    z-index: 2;
+    box-shadow: 0 0 0 transparent;
+    animation: myAni 0.5s linear forwards;
+}
+.ani2 {
+    z-index: 0;
+    box-shadow: 0 0 0 transparent;
+    animation: myM 0.5s linear forwards;
+}
+.anima3 {
+    z-index: 5;
+    box-shadow: 0 0 30px gray;
+    animation: myMation3 0.5s linear forwards;
+}
+.aniDivReverse { 
+    z-index: 2;
+    box-shadow: 0 0 0 transparent;
+    animation: myAniReverse 0.5s linear forwards;
+}
+.ani2Reverse {
+    z-index: 5;
+    box-shadow: 0 0 0 transparent;
+    animation: myMReverse 0.5s linear forwards;
+}
+.anima3Reverse {
+    z-index: 0;
+    box-shadow: 0 0 30px gray;
+    animation: myMation3Reverse 0.5s linear forwards;
+}
+.leftDiv {
+    width: 44.45%; 
+    height: 80%; 
+    background-color: #9FEAF9; 
+    margin: 10px; 
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    z-index: 0;
+}
+@keyframes myAni {
+    0% {
+        left: 27.78%;
+        bottom: -4%;
+    }
+    50% {
+        left: 100px;
+        bottom: 5px;
+    }
+    100% {
+        left: 0px;
+        bottom: 8%;
+    }
+}
+@keyframes myM {
+    0% {
+        left: 0px;
+        bottom: 8%;
+    }
+    50% {
+        left: 225px;
+        bottom: 8%;
+    }
+    100% {
+        left: 53%;
+        bottom: 8%;
+    }
+}
+@keyframes myMation3 {
+    0% {
+        left: 53%;
+        bottom: 8%;
+    }
+    50% {
+        left: 325px;
+        bottom: 5px;
+    }
+    100% {
+        left: 27.78%;
+        bottom: -4%;
+    }
+}
+@keyframes myAniReverse {
+    0% {
+        left: 27.78%;
+        bottom: -4%;
+    }
+    50% {
+        left: 325px;
+        bottom: 5px;
+    }
+    100% {
+        left: 53%;
+        bottom: 8%;
+    }
+}
+@keyframes myMReverse {
+    0% {
+        left: 0px;
+        bottom: 8%;
+    }
+    50% {
+        left: 100px;
+        bottom: 5px;
+    }
+    100% {
+        left: 27.78%;
+        bottom: -4%;
+    }
+}
+@keyframes myMation3Reverse {
+    0% {
+        left: 53%;
+        bottom: 8%;
+    }
+    50% {
+        left: 225px;
+        bottom: 8%;
+    }
+    100% {
+        left: 0px;
+        bottom: 8%;
+    }
+}

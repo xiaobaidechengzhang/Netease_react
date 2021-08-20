@@ -288,6 +288,14 @@ function PlaylistDetail(props) {
       </div>
     );
   };
+
+  /**
+   * 事件
+   */
+  const addPlaylist = () => {
+    console.log('add to play list');
+  }
+
   //歌单详情页面
   return (
     <div className="playlist-detail">
@@ -323,7 +331,7 @@ function PlaylistDetail(props) {
             </span>
           </div>
           <div className="headerPadding5 header-right-row ">
-            <button className="defineBtn border-radius-20 headerPadding5 bkCommonColor marginVer5 whiteCol">
+            <button className="defineBtn border-radius-20 headerPadding5 bkCommonColor marginVer5 whiteCol" onClick={addPlaylist}>
               <img src={PlayPng} className="img25 marginHon5" />
               <span className="height25Vertical padding5">播放全部</span>
               <img src={AddWhitePng} className="img25 marginHon5" />

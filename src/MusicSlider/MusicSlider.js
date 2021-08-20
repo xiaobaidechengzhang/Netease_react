@@ -303,6 +303,13 @@ export default function MusicSlider(props) {
                   />
                 </div>
               </li>
+              <li className="actionItem">
+                <img
+                  className="actionItemImg35 marginHon10"
+                  id='list'
+                  src={listNoActive}
+                />
+              </li>
             </ul>
           </div>
         </div>

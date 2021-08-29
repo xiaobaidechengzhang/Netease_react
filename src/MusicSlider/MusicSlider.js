@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { addToPlaylist, deleteAllSongs, deleteSong, setActive, } from '../store/actions/playlistActions'
+import { connect } from 'react-redux'
 import { Input, message, Button, Slider } from "antd";
 import HTTPUtils from "../HTTPUtils/HTTPUtils";
 import "./MusicSlider.less";
@@ -58,9 +60,12 @@ import itemPlay from "../images/music/musicListItem/play.png";
 //MV
 import MV from "../images/music/musicListItem/mv.png";
 
+
+//引入的组件
 import MusicSliderComponent from "./MusicSliderComponent";
 import AudioSlider from "./AudioSlider";
 import VolumeSlider from "./VolumeSlider";
+import SliderPlaylist from "../SliderPlaylist/SliderPlaylist";
 
 //时间转换--秒转为00:00格式,例如150 -->> 02:30
 const covertTime = (time) => {
@@ -73,9 +78,11 @@ const covertTime = (time) => {
   sec = sec >= 10 ? sec : "0" + sec;
   return min + ":" + sec;
 };
-export default function MusicSlider(props) {
+function MusicSlider(props) {
   const [musicPath, setMuscipath] = useState(""); //歌曲地址
-  const [sliderPause, setSliderPause] = useState(false); //是否正在播放musicSliderComponent
+  const [sliderPause, setSliderPause] = useState(false); //Audio的播放状态; true: 正在播放; false: 停止播放;
+  const [isOnPlaying, setIsOnPlaying] = useState(false);//是否正在播放, 用于切换歌曲, 加载完资源后, 是否自动播放;
+  const [canPlay, setCanplay] = useState(false);//是否能播放, 
   const [sliderEnd, setSliderEnd] = useState(false); //musicSldierComponent是否播放完毕
   const ownAudioRef = useRef(); //配合MusicSliderComponent的audio
   const [duration, setDuration] = useState("0"); //歌曲总时长
@@ -89,6 +96,8 @@ export default function MusicSlider(props) {
   const [volumeImg, setVolumeImg] = useState(volumeNoActive);
   //action--音量条变量
   const [sliderVolume, setSliderVolume] = useState("20%");
+  //是否显示播放列表
+  const [showPlaylist, setShowPlaylist] = useState(false)
 
   //获取父元素类为name的ele
   const getMusicacbtnEle = (e, name) => {
@@ -105,7 +114,23 @@ export default function MusicSlider(props) {
     let audioCurrent = ownAudioRef.current;
     let time = audioCurrent.duration;
     setDuration(time);
-    setSliderPause(!sliderPause);
+    if(!musicPath) {
+      //如果当前播放列表中没有歌曲地址, 但是播放列表中有数据, 那么直接播放列表中第一首歌曲
+      if((props.songs instanceof Array) && props.songs.length > 0) {
+        props.setActiveSong(props.songs[0])
+      }else {
+        if(props.activeSong.data.id) {
+          getMusicUrl(props.activeSong.data.id)
+        }
+      }
+    }
+    if(canPlay) {
+      setSliderPause(!sliderPause)
+      setIsOnPlaying(!sliderPause)
+    }else {
+      setSliderPause(false)
+      setIsOnPlaying(false)
+    }
   };
   //播放状态--也要更新audio的播放状态
   useEffect(() => {
@@ -126,21 +151,45 @@ export default function MusicSlider(props) {
     audioCurrent.currentTime = 0;
   }, [sliderEnd]);
   //切换歌曲
-  const switchSongs = () => {
+  const switchSongs = (type) => {
     setSliderPause(false);
-    //测试切换歌曲
-    if (musicPath == mp3Path) {
-      setMuscipath(hongyanPath);
-    } else {
-      setMuscipath(mp3Path);
+    let songs = props.songs;
+    let len = songs.length;
+    let activeSong = props.activeSong;
+    let songData = {}
+    //上一首/下一首
+    //上一首: 如果当前歌曲是列表中第一首; 那么上一首为列表最后一首;
+    //下一首: 如果当前歌曲是列表中最后一首, 那么下一首是列表第一首
+    switch(type) {
+      case 1:
+        if(activeSong.index == 0) {
+          props.setActiveSong(songs[len]);
+          songData = songs[len-1]
+        }else {
+          props.setActiveSong(songs[activeSong.index - 1])
+          songData = songs[activeSong.index - 1]
+        }
+        break;
+      case 2:
+        if(activeSong.index == len-1) {
+          props.setActiveSong(songs[0]);
+          songData = songs[0]
+        }else {
+          props.setActiveSong(songs[activeSong.index + 1])
+          songData = songs[activeSong.index + 1]
+        }
+        break;
+      default:
+        break;
     }
-    setIsFirst(1);
-    console.log("switch songs");
+
   };
   //在ownAudioRef能够播放时, 获取总时长,
   const handleAudioCanPlay = () => {
+    console.log('handle auto can play');
     let audioCurrent = ownAudioRef.current;
     setDuration(audioCurrent.duration);
+    setCanplay(true)
   };
 
   //ownAudioRef总时长变化后, 播放musicSliderComponent
@@ -194,13 +243,24 @@ export default function MusicSlider(props) {
     let id = event.target.id;
     switch (id) {
       case "forward":
-        switchSongs();
+        switchSongs(1);
         break;
       case "play":
         handleSliderPause();
         break;
       case "last":
-        switchSongs();
+        switchSongs(2);
+        break;
+      case 'volume':
+        let volume = parseInt(sliderVolume);
+        if(volume == 0) {
+          handleVolumeSliderChange(0.2)
+        }else {
+          handleVolumeSliderChange(0)
+        }
+        break;
+      case 'list':
+        setShowPlaylist(!showPlaylist)
         break;
       default:
         break;
@@ -234,6 +294,8 @@ export default function MusicSlider(props) {
   };
   //音量条change事件
   const handleVolumeSliderChange = (vol) => {
+    console.log('handle volume slider');
+    console.log(vol);
     //vol是小数, 例如0.52
     let audioRef = ownAudioRef.current;
     audioRef.volume = vol;
@@ -241,11 +303,54 @@ export default function MusicSlider(props) {
     setSliderVolume(percent);
   };
 
+  //获取音乐url
+  const getMusicUrl = async (id) => {
+    if(!id) {
+      return;
+    }
+    let params = {
+      id,
+    }
+    let data = await HTTPUtils.song_url(params);
+    console.log('get music url');
+    console.log(data);
+    let url = data.data[0].url
+    setMuscipath(url)
+  }
+
+  //每次播放的歌曲url变化都要重新获取音乐的url
   useEffect(() => {
-    setMuscipath(mp3Path);
-  }, []);
+    setSliderPause(false)
+    setCanplay(false)
+    getMusicUrl(props.activeSong.data.id);
+  }, [props.activeSong.data.id])
+
+  //每首歌曲播放完毕, 继续播放下一首
+  useEffect(() => {
+    if(parseInt(currentAudioTime) == 100) {
+      let songs = props.songs;
+      let len = songs.length;
+      let activeSong = props.activeSong
+      if(activeSong.index != -1) {
+        //同样的上一首/下一首逻辑
+        if(activeSong.index == (len-1)) {
+          props.setActiveSong(props.songs[0])
+        }else {
+          props.setActiveSong(songs[activeSong.index + 1])
+        }
+      }
+    }
+  }, [currentAudioTime])
+
+  //依赖canplay, 如果当前能播放, 并且isOnPlaying为true的情况下, 自动播放歌曲
+  useEffect(() => {
+    if(canPlay && isOnPlaying) {
+      setSliderPause(true)
+    }
+  }, [canPlay])
+
   return (
-    <div id={props.id}>
+    <div id={props.id} style={{ position: 'relative' }}>
       <audio
         ref={ownAudioRef}
         id="audio"
@@ -276,7 +381,7 @@ export default function MusicSlider(props) {
                   src={forwardImg}
                 />
               </li>
-              <li className="actionItem">
+              <li className="actionItem" >
                 <img
                   className="actionItemImg50 marginHon10"
                   id="play"
@@ -314,6 +419,39 @@ export default function MusicSlider(props) {
           </div>
         </div>
       </div>
+      {showPlaylist ? <SliderPlaylist/> : null}
     </div>
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    songs: state.playlistReducer.data,
+    activeSong: state.playlistReducer.active
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addSong: (data, index) => {
+      dispatch(addToPlaylist(data, index));
+    },
+    deleteSong: (data, index) => {
+      dispatch(deleteSong(data, index))
+    },
+    deleteAllSongs: () => {
+      dispatch(deleteAllSongs())
+    },
+    setActiveSong: data => {
+      console.log(dispatch);
+      dispatch(setActive(data))
+    }
+  }
+}
+
+const MusicSliderContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MusicSlider)
+
+export default MusicSliderContainer;

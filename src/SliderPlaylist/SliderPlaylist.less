@@ -1,0 +1,100 @@
+
+@commonColor: #DD001B;
+@commonHoverColor: #f09a9a;
+@commonBorderColor: #e1dede;
+@commonGrayColor: #818181;
+@commonIndexColor: #F9F9F9;
+@commonActiveColor: #e5e5e5;
+@maleBackColor: #C0F3FF;
+@femaleBackColor: #FFCDE8;
+.playlist {
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  width: 500px;
+  height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: white;
+  z-index: 100;
+  box-shadow: -5px 5px 15px 5px #ccc;
+  font-size: 12px;
+  .content {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    height: 86%;
+    overflow-y: auto;
+    .backGray {
+      background-color: @commonIndexColor;
+    }
+    .activeGray {
+      background-color: @commonActiveColor;
+    }
+    .canSelectItem:focus {
+      background-color: @commonActiveColor;
+    }
+    .activeListItem {
+      color: @commonColor !important;
+    }
+    .content-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      min-height: 60px;
+      .flex4 {
+        flex: 4;
+      }
+      .flex2 {
+        flex: 2;
+      }
+      .txtCenter {
+        text-align: center;
+      }
+      .txtLightGray {
+        color: @commonGrayColor;
+      }
+      .txtRed {
+        color: @commonColor;
+      }
+      .borderRedColor {
+        border: 1px solid @commonColor;
+        border-radius: 5px;
+      }
+      .img15 {
+        width: 15px;
+        height: 15px;
+        object-fit: cover;
+      }
+      .content-header-item {
+        height: 100%;
+        line-height: 15px;
+        .item-flex {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          .header-item-right {
+            display: flex; 
+            flex-direction: row; 
+            flex-wrap: wrap; 
+            flex: 1; 
+            line-height: 25px;
+          }
+          .item-flex-item {
+            text-align: center;
+            margin: 0 5px;
+          }
+          .clickItem {
+            cursor: pointer;
+            &:hover {
+              color: @commonHoverColor;
+              border: 1px solid @commonHoverColor;
+            }
+          }
+        }
+      }
+    }
+  }
+}

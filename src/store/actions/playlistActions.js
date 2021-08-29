@@ -8,6 +8,8 @@ export const addToPlaylist = (data, index) => {
 }
 //删除数据
 export const deleteSong = (data, index) => {
+  console.log('delete delte ');
+  console.log(index);
   return {
     type: 'delete',
     data: data,
@@ -24,5 +26,27 @@ export const deleteAllSongs = () => {
 export const getSongs = () => {
   return {
     type: 'get'
+  }
+}
+//设置数据
+export const setSongs = (data) => {
+  return {
+    type: 'set',
+    data
+  }
+}
+//设置当前播放歌曲的数据
+export const setActive = data => {
+  console.log('set active');
+  console.log(data)
+  return {
+    type: 'setActive',
+    data
+  }
+}
+//获取当前播放歌曲的数据
+export const getActive = () => {
+  return {
+    type: 'getActive',
   }
 }

@@ -3,15 +3,21 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { EasyrouteProvider } from 'react-easyroute';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import routes from './Router/router';
-import { HashRouter,  } from 'react-router-dom';
+import indexReducer from './store/reducers';
+import { HashRouter, } from 'react-router-dom';
+
+const store = createStore(indexReducer)
 
 ReactDOM.render(
   <React.StrictMode>
-    <HashRouter routes={routes}>
-      <App routes={routes}/>
-    </HashRouter>
+    <Provider store={store}>
+      <HashRouter routes={routes}>
+        <App routes={routes} />
+      </HashRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

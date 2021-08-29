@@ -40,7 +40,7 @@ function exchangeTime(time, type) {
  * @param {Number | String} time : 例如212000毫秒数
  * @returns 05:36:25 || 05:36
  */
-function exchagneDuration(time) {
+function exchangeDuration(time) {
     time = parseInt(time);
     let dur = 212000;
     time = time / 1000;
@@ -56,6 +56,8 @@ function exchagneDuration(time) {
         allMin;
     allMin = Math.floor(time / 60);
     sec = time - allMin*60;
+    //转换成整数, 因为很有可能有许多位的小数
+    sec = parseInt(sec)
     sec = sec < 10 ? '0'+sec : sec;
     h = Math.floor(time / 3600);
     m = h < 1 ? Math.floor(time / 60) : (time - h*3600 - sec)/60;
@@ -64,4 +66,4 @@ function exchagneDuration(time) {
     title = h < 1 ? m + ':' + sec : h+':'+m+':'+sec;
     return title;
 }
-export { exchangeTime, exchagneDuration };
+export { exchangeTime, exchangeDuration };

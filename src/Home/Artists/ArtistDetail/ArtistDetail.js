@@ -15,7 +15,7 @@ import ListActivePng from "@/images/AritstDetail/list-active.png";
 import DownPng from "@/images/Playlist/down.png";
 import UpPng from "@/images/Playlist/up.png";
 
-const { exchangeTime, exchagneDuration } = require("@/Utils/ExchangeTime");
+const { exchangeTime, exchangeDuration } = require("@/Utils/ExchangeTime");
 
 function ArtistDetail(props) {
   //歌手数据
@@ -469,7 +469,7 @@ function ArtistDetail(props) {
               </span>
             </div>
             <div className="list-item-time">
-              {exchagneDuration(item.duration)}
+              {exchangeDuration(item.duration)}
             </div>
           </div>
           <p className="mv-list-item-name">{item.name}</p>

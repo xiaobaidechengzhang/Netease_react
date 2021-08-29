@@ -21,7 +21,7 @@ import GenderFemale from "@/images/Playlist/gender-female.png";
 import AddWhite from "@/images/Playlist/addWhite.png";
 import { withRouter } from "react-router";
 
-const { exchangeTime, exchagneDuration } = require("@/Utils/ExchangeTime");
+const { exchangeTime, exchangeDuration } = require("@/Utils/ExchangeTime");
 
 function Test(props) {
   //用户id, 创建时间信息

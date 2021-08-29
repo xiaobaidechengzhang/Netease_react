@@ -2,8 +2,8 @@
 @commonHoverColor: #f09a9a;
 @commonBorderColor: #e1dede;
 @commonGrayColor: #818181;
-@commonIndexColor: #e6e4e4;
-@commonActiveColor: #a7a5a5;
+@commonIndexColor: #F9F9F9;
+@commonActiveColor: #e5e5e5;
 @maleBackColor: #C0F3FF;
 @femaleBackColor: #FFCDE8;
 ul, li, p {
@@ -11,6 +11,9 @@ ul, li, p {
   margin: 0;
 }
 .playlist-detail {
+  width: 100%;
+  height: calc(100% - 100px);
+  overflow-y: auto;
   .playlist-detail-header {
     position: relative;
     height: auto;
@@ -151,6 +154,9 @@ ul, li, p {
       .canSelectItem:focus {
         background-color: @commonActiveColor;
       }
+      .activeListItem {
+        color: @commonColor !important;
+      }
       .content-header {
         display: flex;
         flex-direction: row;
@@ -183,7 +189,6 @@ ul, li, p {
         }
         .content-header-item {
           height: 100%;
-          line-height: 60px;
           .item-flex {
             display: flex;
             flex-wrap: wrap;
@@ -282,6 +287,12 @@ ul, li, p {
             left: 5%;
             width: 95%;
             min-height: 100px;
+            .list-item-reply {
+              padding: 5px 10px;
+              background-color: @commonIndexColor;
+              border-radius: 10px;
+              margin: 5px 0;
+            }
             .list-item-date {
               padding: 10px 0;
               display: flex;
@@ -324,6 +335,12 @@ ul, li, p {
           flex-direction: row;
           justify-content: flex-start;
           align-items: center;
+          .collection-item-name {
+            max-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
           .collection-item-head-portrait {
             width: 100px;
             height: 100px;

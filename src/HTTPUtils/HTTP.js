@@ -60,6 +60,7 @@ Http.handleFetchData = (url, fetchParams) => {
 }
 
 Http.handleResult = (result) => {
+    console.log(result);
     if(result.code != 200 && result.data?.code != 200) {
         const errMsg= result.msg || result.message || '服务器开了小差, 请稍后再试!';
         const errStr = `${errMsg} (${result.code})`;
@@ -70,7 +71,7 @@ Http.handleResult = (result) => {
 }
 
 Http.handleFailedResult = (result) => {
-    if(result.code != 200) {
+    if(result.code != 200 && result.data?.code != 200) {
         const errMsg= result.msg || result.message || '服务器开了小差, 请稍后再试!';
         const errStr = `${errMsg} (${result.code})`;
         message.error(errStr)

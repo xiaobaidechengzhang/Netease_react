@@ -52,13 +52,13 @@ export default function Carousel(props) {
 
             </div> */}
             <div className={ `allT ${index == '1' ? `${left ? 'aniDiv' : 'aniDivReverse'}` : `${index == '2' ? `${left ? 'ani2' : 'ani2Reverse'}` : `${index == '3' ? `${left ? 'anima3' : 'anima3Reverse'}` : ''}`}`}`}>
-                <img src={props.data.length > 0 && props.data[0].imageUrl} style={{width: '100%', height: '100%'}}/>
+                <img src={props.data.length > 0 ? props.data[0].imageUrl : ''} style={{width: '100%', height: '100%'}}/>
             </div>
             <div className={ `allT1 ${index == '1' ? `${left ? 'ani2' : 'ani2Reverse'}` : `${index == '2' ? `${left ? 'anima3' : 'anima3Reverse'}` : `${index == '3' ? `${left ? 'aniDiv' : 'aniDivReverse'}` : ''}`}`}`}>
-                <img src={props.data.length > 0 && props.data[1].imageUrl} style={{width: '100%', height: '100%'}}/>
+                <img src={props.data.length > 0 ? props.data[1].imageUrl : ''} style={{width: '100%', height: '100%'}}/>
             </div>
             <div className={ `allT2 ${index == '1' ? `${left ? 'anima3' : 'anima3Reverse'}` : `${index == '2' ? `${left ? 'aniDiv' : 'aniDivReverse'}` : `${index == '3' ? `${left ? 'ani2' : 'ani2Reverse'}` : ''}`}`}`}>
-                <img src={props.data.length > 0 && props.data[2].imageUrl} style={{width: '100%', height: '100%'}}/>
+                <img src={props.data.length > 0 ? props.data[2].imageUrl : ''} style={{width: '100%', height: '100%'}}/>
             </div>
             <div style={{position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', zIndex: 3, opacity: 0.5, display: 'flex', flexDirection: 'row'}}>
                 <div style={{flex: 1, opacity: 0.5, cursor: 'pointer'}} onClick={leftClickDiv}>

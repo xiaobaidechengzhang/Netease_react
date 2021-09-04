@@ -98,6 +98,9 @@ function PersonalSuggest(props) {
     await getPersonlizedPrivatecontentList();
     await getBanner();
     await getPersonlizedMV();
+    let data = await HTTPUtils.login_status();
+    console.log('登录状态');
+    console.log(data);
   }, []);
   /**
    * 需要登录
@@ -140,7 +143,7 @@ function PersonalSuggest(props) {
    * 进入歌单详情
    */
   const navigateDetail = (item) => {
-    props.history.push('/playlist/'+item.id)
+    props.history.push('/playlist/' + item.id)
   }
 
 
@@ -162,9 +165,49 @@ function PersonalSuggest(props) {
     let data = await HTTPUtils.top_playlist(bb);
     console.log(data);
   };
+
+
+  //进入个人中心
+  const navigatePersonalCenter = () => {
+    let item = {
+      "defaultAvatar": false,
+      "province": 110000,
+      "authStatus": 0,
+      "followed": false,
+      "avatarUrl": "http://p1.music.126.net/d95alxoqc97Xr_cPNBsBGw==/109951164615466395.jpg",
+      "accountStatus": 0,
+      "gender": 2,
+      "city": 110101,
+      "birthday": 814427052290,
+      "userId": 261258614,
+      "userType": 0,
+      "nickname": "威严满满的女王大人",
+      "signature": "一条咸鱼~",
+      "description": "",
+      "detailDescription": "",
+      "avatarImgId": 109951164615466400,
+      "backgroundImgId": 109951164687067890,
+      "backgroundUrl": "http://p1.music.126.net/w80L88QY30ALvKym1GPyVQ==/109951164687067882.jpg",
+      "authority": 0,
+      "mutual": false,
+      "expertTags": null,
+      "experts": null,
+      "djStatus": 0,
+      "vipType": 11,
+      "remarkName": null,
+      "subscribeTime": 1630394522117,
+      "backgroundImgIdStr": "109951164687067882",
+      "avatarImgIdStr": "109951164615466395",
+      "vipRights": null,
+      "avatarImgId_str": "109951164615466395",
+      "avatarDetail": null
+    }
+    props.history.push('/personal')
+  }
+
   return (
     <div>
-      <div>personalsuggest</div>
+      <Button onClick={navigatePersonalCenter}>导航进入个人中心</Button>
       <Carousel data={bannerData} />
       <div style={{ display: "flex", flexDirection: "row", margin: "50px 0" }}>
         <div style={{ flex: 1 }}>
@@ -175,12 +218,13 @@ function PersonalSuggest(props) {
             {songsData.map((item, index) => {
               return (
                 <div
-                  className={`personSongsItem 
+                  className={`personSongsItem is_song
                                 ${index == 0 && "firstImg"}
                                 ${index == 1 && "secImg"}
                                 ${index == 2 && "thirdImg"}
                             `}
                   key={item.id}
+                  data-song={JSON.stringify(item)}
                 >
                   <p style={{ width: 50 }}>{index}</p>
                   <img src={item.picUrl + "?param=200y200"} />
@@ -205,15 +249,16 @@ function PersonalSuggest(props) {
               return (
                 <div
                   key={item.id}
-                  className="playlistItem min30PlaylistItem"
+                  className="playlistItem min30PlaylistItem is_playlist"
                   // onMouseOver={() => playlistOver(item.id, 1)}
                   // onMouseOut={() => playlistOver(item.id, 2)}
                   onClick={() => navigateDetail(item)}
+                  data-playlist={item.id}
                 >
                   <div className="playlistItemContent">
                     <img
                       className="playlistItemContentImg"
-                      src={item.picUrl + "?param=200y200"}
+                      src={item.picUrl ? item.picUrl + "?param=200y200" : ''}
                     />
                     <div className="playlistItemContentImgCon">
                       <img src={PlayImg} />
@@ -240,11 +285,10 @@ function PersonalSuggest(props) {
               key={item.id}
               className={`
                                     videoGroupListItem 
-                                    ${
-                                      item.id == selGroupID
-                                        ? "videoGroupListItemActive"
-                                        : null
-                                    }
+                                    ${item.id == selGroupID
+                  ? "videoGroupListItemActive"
+                  : null
+                }
                                 `}
               onClick={() => selectVideoGroup(item)}
             >
@@ -270,13 +314,13 @@ function PersonalSuggest(props) {
             <div
               key={item.id}
               className="playlistItem min30PlaylistItem"
-              // onMouseOver={() => playlistOver(item.id, 1)}
-              // onMouseOut={() => playlistOver(item.id, 2)}
+            // onMouseOver={() => playlistOver(item.id, 1)}
+            // onMouseOut={() => playlistOver(item.id, 2)}
             >
               <div className="playlistItemContent">
                 <img
                   className="playlistItemContentImg"
-                  src={item.picUrl + "?param=200y200"}
+                  src={item.picUrl ? item.picUrl + "?param=200y200" : ''}
                 />
                 <div className="playlistItemContentImgCon">
                   <img src={PlayImg} />
@@ -296,13 +340,13 @@ function PersonalSuggest(props) {
             <div
               key={item.id}
               className="playlistItem min30PlaylistItem"
-              // onMouseOver={() => playlistOver(item.id, 1)}
-              // onMouseOut={() => playlistOver(item.id, 2)}
+            // onMouseOver={() => playlistOver(item.id, 1)}
+            // onMouseOut={() => playlistOver(item.id, 2)}
             >
               <div className="playlistItemContent">
                 <img
                   className="playlistItemContentImg"
-                  src={item.picUrl + "?param=200y200"}
+                  src={item.picUrl ? item.picUrl + "?param=200y200" : ''}
                 />
                 <div className="playlistItemContentImgCon">
                   <img src={PlayImg} />
@@ -321,14 +365,14 @@ function PersonalSuggest(props) {
           return (
             <div
               key={item.id}
-              className="playlistItem min20PlaylistItem"
-              // onMouseOver={() => playlistOver(item.id, 1)}
-              // onMouseOut={() => playlistOver(item.id, 2)}
+              className="playlistItem min20PlaylistItem is_mv"
+            // onMouseOver={() => playlistOver(item.id, 1)}
+            // onMouseOut={() => playlistOver(item.id, 2)}
             >
               <div className="playlistItemContent">
                 <img
                   className="playlistItemContentImg"
-                  src={item.picUrl + "?param=200y200"}
+                  src={item.picUrl ? item.picUrl + "?param=200y200" : ''}
                 />
                 <div className="playlistItemContentImgCon">
                   <img src={PlayImg} />

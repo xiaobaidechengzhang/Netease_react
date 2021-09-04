@@ -7,6 +7,7 @@ import SubHome from './SubHome/SubHome';
 import { RouterOutlet } from 'react-easyroute';
 import { Route, Switch, Link, useParams } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config';
+import $ from 'jquery'
 const paths = {
     '/home/0': 0,
     '/home/1': 1,
@@ -28,7 +29,7 @@ export default function Home(props) {
         console.log(props.route.routes);
         let pathname = props.location.pathname;
         setActiveHomeTag(paths[pathname])
-    },)
+    })
     /**
      * 
      * @param {type: String} type : 0: 个性推荐; 1: 歌单; 2: 排行榜; 3: 歌手; 4: 最新音乐
@@ -66,6 +67,7 @@ export default function Home(props) {
                     <SubHome/>
                 </Route>
             </Switch> */}
+            
         </div>
     )
 }

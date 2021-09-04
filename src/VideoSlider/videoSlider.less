@@ -1,0 +1,31 @@
+.videoContainerCeil {
+  display: block;
+  min-height: 50px;
+  .containerCeilRow {
+    float: left;
+    li {
+      float: left;
+    }
+  }
+  &::after {
+    content: '';
+    height: 0;
+    display: block;
+    visibility: hidden;
+    overflow: hidden;
+  }
+}
+.videoContainerFloor {
+  min-height: 50px;
+  .floorRowContainer {
+    .floorRow {
+      display: inline-block;
+      li {
+        display: inline-block;
+      }
+    }
+    .floorRight {
+      float: right;
+    }
+  }
+}

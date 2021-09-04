@@ -205,7 +205,7 @@ function ArtistDetail(props) {
   };
   //事件--滚动到离底部100px时, 修改专辑列表依赖的offset
   const scrollBottomLoadingAlbum = async () => {
-    if (artistDetailRef) {
+    if (artistDetailRef.current) {
       let scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop;
       let clientHeight = window.innerHeight;
@@ -217,7 +217,7 @@ function ArtistDetail(props) {
   };
   //事件--滚动到离底部100px时, 修改MV列表依赖的offset
   const scrollBottomLoadingMV = async () => {
-    if (artistDetailRef) {
+    if (artistDetailRef.current) {
       let scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop;
       let clientHeight = window.innerHeight;
@@ -237,7 +237,7 @@ function ArtistDetail(props) {
   }, [mvsOffset]);
   //依赖tabIndex--不同tab, 切换不同的滑动底部加载
   useEffect(() => {
-    if (artistDetailRef) {
+    if (artistDetailRef.current) {
       if (tabIndex == "2") {
         window.onscroll = throttle(scrollBottomLoadingMV, 1000);
       } else if (tabIndex == "1") {
@@ -253,10 +253,11 @@ function ArtistDetail(props) {
     return (
       <ul
         // className={`content-header fontsize18 canSelectItem`}
-        className={`content-header fontsize18 canSelectItem ${
+        className={`content-header fontsize18 is_song canSelectItem ${
           (parseInt(index) - 1) % 2 == 0 ? "backGray" : ""
         }`}
         tabIndex="1"
+        data-song={JSON.stringify(item)}
       >
         <li className="content-header-item flex6">
           <ul className="item-flex">
@@ -350,10 +351,11 @@ function ArtistDetail(props) {
   const ListModalItem = ({ item, index }) => {
     return (
       <li
-        className={`listModal-list-item canSelectItem ${
+        className={`listModal-list-item is_playlist canSelectItem ${
           index % 2 == 0 ? "backGray" : ""
         }`}
         tabIndex={index}
+        data-playlist={item.id}
       >
         <ul className="listModal-list-item-container">
           <li className="list-item list-item-left">
@@ -394,7 +396,7 @@ function ArtistDetail(props) {
   //渲染--专辑列表--大图模式--item
   const PicModalItem = ({ item, index }) => {
     return (
-      <li className="picmodal-list-item">
+      <li className="picmodal-list-item is_playlist" data-playlist={JSON.stringify(item)}>
         <div className="picmodal-list-item-container">
           <img src={item.picUrl + "?param=250y150"} className="list-item-img" />
           <p className="list-item-title">{item.name}</p>
@@ -452,7 +454,7 @@ function ArtistDetail(props) {
     return (
       <div className="mv-list">
         <div className="mv-list-item-container">
-          <div className="mv-list-item">
+          <div className="mv-list-item is_mv">
             <img
               src={item.imgurl + "?param=200y200"}
               className="list-item-img"

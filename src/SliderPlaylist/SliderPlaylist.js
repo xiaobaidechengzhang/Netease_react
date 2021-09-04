@@ -66,11 +66,12 @@ function SliderPlaylist(props) {
     let activeId = props.activeSong?.data?.id ? props.activeSong?.data?.id : null
     return (
       <ul
-        className={`content-header fontsize18 canSelectItem ${
+        className={`content-header is_song is_sliderplaylist fontsize18 canSelectItem ${
           (index - 1) % 2 == 0 ? "backGray" : ""
         } ${activeId == data.id ? "activeListItem" : ""}`}
         tabIndex={index}
         onDoubleClick={playThisSong.bind(this, data, index)}
+        data-song={JSON.stringify(data)}
       >
         <li className="content-header-item flex4">
           <ul className="item-flex">
@@ -112,7 +113,7 @@ function SliderPlaylist(props) {
     );
   };
   return (
-    <div className='playlist'>
+    <div className='sliderPlaylist'>
       <div style={{height: '50px',lineHeight: '50px', padding: '0px 20px'}}>
         <div style={{display: 'inline-block'}}>
           总共{props.songs.length}首
@@ -136,7 +137,7 @@ function SliderPlaylist(props) {
         </ul>
         <div style={{flex: 1, overflowY: 'auto'}}>
         {(props.songs instanceof Array) && props.songs.map((item, index) => {
-            return <ListItem key={item.id + index} data={item} index={index} />;
+            return <ListItem key={item.id + index.toString()} data={item} index={index} />;
           })}
         </div>
       </div>

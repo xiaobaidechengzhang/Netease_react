@@ -150,6 +150,7 @@ function Artists(props) {
 
   //滚动加载图片
   window.onscroll = () => {
+    //首先将真实图片url添加到data-imgurl中, 通过判断距离, 来将真实url, 添加到src中, 实现懒加载
     if(artistsRef) {
       let imgs = document.querySelectorAll('.artistsListItemImg');
       imgs.forEach((item, index) => {

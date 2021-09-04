@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, } from 'react';
 import { Input, message, Button, } from 'antd';
 import HTTPUtils from '../HTTPUtils/HTTPUtils';
 import './Search.less';
+import $ from 'jquery'
 /**
  *
  *
@@ -78,6 +79,7 @@ export default function Search(props) {
     //事件---点击search_list_item
     const list_item_click = async (value) => {
         setSearchKeyword(value)
+        console.log('ppp');
         setIsSearchFocus(false)
     }
 

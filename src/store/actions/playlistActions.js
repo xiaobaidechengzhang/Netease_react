@@ -10,6 +10,7 @@ export const addToPlaylist = (data, index) => {
 export const deleteSong = (data, index) => {
   console.log('delete delte ');
   console.log(index);
+  console.log(data);
   return {
     type: 'delete',
     data: data,
@@ -48,5 +49,13 @@ export const setActive = data => {
 export const getActive = () => {
   return {
     type: 'getActive',
+  }
+}
+
+//下一首播放
+export const next = data => {
+  return {
+    type: 'next',
+    data
   }
 }

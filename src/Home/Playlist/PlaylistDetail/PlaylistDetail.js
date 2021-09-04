@@ -136,7 +136,7 @@ function PlaylistDetail(props) {
       console.log('所有歌曲详细数据');
       console.log(data);
       setAllSongsData(data.songs)
-      props.addSong(data.songs)
+      // props.addSong(data.songs)
       let start = pageSize * (currentPage - 1);
       let end = pageSize * (currentPage);
       let showSongsData = data.songs.slice(start, end);
@@ -235,6 +235,8 @@ function PlaylistDetail(props) {
 
   //依赖 arriveBottom 是否到达底部; 单独拎出来一个中间属性, 因为闭包情况下 tab index 总是为1, 不会变化
   useEffect(() => {
+    console.log('use effect arrive bottom');
+    console.log(arriveBottom);
     if(arriveBottom) {
       if(tabIndex == 2) {
         //加载新的评论数据
@@ -306,9 +308,15 @@ function PlaylistDetail(props) {
     }
     let newSubscribersData = subcribersPage == 1 ? data.subscribers : subscribersData.concat(data.subscribers);
     setSubscribersData(newSubscribersData)
+    setArriveBottom(false)
     if(!(data.more)) {
       setHasMoreSubcribers(false)
     }
+  }
+  //点击收藏者 进入收藏者个人中心
+  const navigatePersonalCenter = (data) => {
+    let id = data.userId;
+    props.history.push('/personal/'+id)
   }
 
   //依赖 页数改变后, 需要加载新的收藏者数据
@@ -327,7 +335,7 @@ function PlaylistDetail(props) {
     await getPlaylistDetail();
     await getPlaylistComments();
     await getPlaylistSubcribers();
-    playlistDetailRef.current?.addEventListener('scroll', debounceHandleScroll(handleScroll, 500))
+    playlistDetailRef.current?.addEventListener('scroll', debounceHandleScroll(handleScroll, 300))
   }, []);
   
 
@@ -338,7 +346,8 @@ function PlaylistDetail(props) {
     let activeId = props.activeSong?.data?.id ? props.activeSong?.data?.id : null;
     return (
       <ul
-        className={`content-header fontsize18 canSelectItem ${
+        data-song={JSON.stringify(data)}
+        className={`content-header fontsize18 is_song canSelectItem ${
           (index - 1) % 2 == 0 ? "backGray" : ""
         } ${activeId == data.id ? "activeListItem" : ""}` }
         tabIndex={index}
@@ -427,6 +436,7 @@ function PlaylistDetail(props) {
           <img
             src={data?.avatarUrl + "?param=100y100"}
             className="collection-item-head-portrait marginHon5"
+            onClick={() => navigatePersonalCenter(data)}
           />
           <p className="marginHon5 collection-item-name">{data?.nickname}</p>
           {data.gender == 1 ? (

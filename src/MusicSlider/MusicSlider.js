@@ -132,7 +132,7 @@ function MusicSlider(props) {
       setIsOnPlaying(false)
     }
   };
-  //播放状态--也要更新audio的播放状态
+  //播放状态- -也要更新audio的播放状态
   useEffect(() => {
     let audioCurrent = ownAudioRef.current;
     if (sliderPause) {
@@ -150,34 +150,45 @@ function MusicSlider(props) {
     setSliderPause(false);
     audioCurrent.currentTime = 0;
   }, [sliderEnd]);
-  //切换歌曲
-  const switchSongs = (type) => {
-    setSliderPause(false);
+
+  //播放下一首, 或者播放上一首
+  const playPreOrNextSong = (type) => {
     let songs = props.songs;
     let len = songs.length;
     let activeSong = props.activeSong;
-    let songData = {}
+    if(type == 1) {
+      //播放上一首
+      if(activeSong.index == 0) {
+        props.setActiveSong(songs[len-1]);
+      }else {
+        props.setActiveSong(songs[activeSong.index - 1])
+      }
+    }else {
+      //播放下一首
+      if(activeSong.index == len-1) {
+        props.setActiveSong(songs[0]);
+      }else {
+        props.setActiveSong(songs[activeSong.index + 1])
+      }
+    }
+  }
+
+
+  //切换歌曲
+  const switchSongs = (type) => {
+    setSliderPause(false);
+    // let songs = props.songs;
+    // let len = songs.length;
+    // let activeSong = props.activeSong;
     //上一首/下一首
     //上一首: 如果当前歌曲是列表中第一首; 那么上一首为列表最后一首;
     //下一首: 如果当前歌曲是列表中最后一首, 那么下一首是列表第一首
     switch(type) {
       case 1:
-        if(activeSong.index == 0) {
-          props.setActiveSong(songs[len]);
-          songData = songs[len-1]
-        }else {
-          props.setActiveSong(songs[activeSong.index - 1])
-          songData = songs[activeSong.index - 1]
-        }
+        playPreOrNextSong(1)
         break;
       case 2:
-        if(activeSong.index == len-1) {
-          props.setActiveSong(songs[0]);
-          songData = songs[0]
-        }else {
-          props.setActiveSong(songs[activeSong.index + 1])
-          songData = songs[activeSong.index + 1]
-        }
+        playPreOrNextSong(2)
         break;
       default:
         break;
@@ -315,7 +326,23 @@ function MusicSlider(props) {
     console.log('get music url');
     console.log(data);
     let url = data.data[0].url
-    setMuscipath(url)
+    if(!url) {
+      //url返回null, 那么说明没有版权, 直接进入下一个数据
+      let songs = props.songs;
+      let len = songs.length;
+      let activeSong = props.activeSong
+      if(activeSong.index != -1) {
+        //同样的上一首/下一首逻辑
+        // if(activeSong.index == (len-1)) {
+        //   props.setActiveSong(songs[0])
+        // }else {
+        //   props.setActiveSong(songs[activeSong.index + 1])
+        // }
+        playPreOrNextSong(2)
+      }
+    }else {
+      setMuscipath(url)
+    }
   }
 
   //每次播放的歌曲url变化都要重新获取音乐的url
@@ -333,11 +360,7 @@ function MusicSlider(props) {
       let activeSong = props.activeSong
       if(activeSong.index != -1) {
         //同样的上一首/下一首逻辑
-        if(activeSong.index == (len-1)) {
-          props.setActiveSong(props.songs[0])
-        }else {
-          props.setActiveSong(songs[activeSong.index + 1])
-        }
+        playPreOrNextSong(2)
       }
     }
   }, [currentAudioTime])

@@ -10,6 +10,9 @@ import Test from '../Test/Test';
 import MusicSlider from '../../MusicSlider/MusicSlider'
 import MusicSliderComponent from '../../MusicSlider/MusicSliderComponent';
 import ArtistDetail from '../Artists/ArtistDetail/ArtistDetail'
+import PersonalCenter from '../PersonalCenter/PersonalCenter';
+import Search from '../../Search/Search';
+import VideoSlider from '../../VideoSlider/VideoSlider';
 
 export default function SubHome(props) {
     let { id } = useParams();
@@ -46,11 +49,13 @@ export default function SubHome(props) {
             }
             {
                 id!= 0 && id != 1 && id !=2 && id != 3 ?
+                <VideoSlider/>
                 // <NewestSong/>
+                // <Search/>
                 // <PlaylistDetail/>
-                // <Test/>
+                // <PersonalCenter/>
                 // <MusicSliderComponent/>
-                <MusicSlider/>
+                // <MusicSlider/>
                 // <ArtistDetail/>
                 :
                 null

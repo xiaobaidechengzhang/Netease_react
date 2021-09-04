@@ -247,7 +247,7 @@ function Playlist(props) {
           })}
         </ul>
       </div>
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: 20, overflow: 'auto' }}>
         {allPlaylist.map((item, index) => {
           //Math.floor(expandIndex/5) == Math.floor(index/5)---是否是当前行, 因为默认一行有5个元素
           //expandIndex == index : 是否是当前行, hover元素, 如果是当前元素, 加宽类expand; 如果不是, 缩小宽度类noexpand
@@ -260,7 +260,8 @@ function Playlist(props) {
                     ? "expand"
                     : "noexpand"
                   : ""
-              } allPlItem`}
+              } allPlItem is_playlist`}
+              data-playlist={item.id}
             >
               <div
                 className="allPlItemImgContainer"

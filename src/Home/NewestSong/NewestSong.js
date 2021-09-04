@@ -99,6 +99,7 @@ export default function NewestSong(props) {
   /**
    *
    * @param {Object} data : 生成指定结构的数据{title: String, year: String, month: String, week: Boolean, list: Array}
+   * 组合数据, 同一时间段, 在相应时间的对象中, 滑动加载, 添加数据; 如果没有更多数据, 那么添加更早时间段, 并请求相应时间段数据, 以此循环
    */
   const geneCorStucData = async (data) => {
     //如果是最新数据, 则有weekData数据,

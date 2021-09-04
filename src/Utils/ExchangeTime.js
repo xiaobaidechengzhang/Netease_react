@@ -45,10 +45,12 @@ function exchangeDuration(time) {
     let dur = 212000;
     time = time / 1000;
     if(time < 1){
-        return '小于1s';
+        // return '小于1s';
+        return '00:00';
     }
     if(time > 24*60*60) {
-        return '大于一天'
+        // return '大于一天'
+        return '23:59:59'
     }
     let h,
         m,
@@ -66,4 +68,7 @@ function exchangeDuration(time) {
     title = h < 1 ? m + ':' + sec : h+':'+m+':'+sec;
     return title;
 }
+/**
+ * 返回音乐/榜单/视频/MV播放量, 例如588888-->58万; 201-->201; 
+ */
 export { exchangeTime, exchangeDuration };

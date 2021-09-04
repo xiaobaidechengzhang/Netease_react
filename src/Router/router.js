@@ -7,6 +7,7 @@ import Playlist from '../Home/Playlist/Playlist';
 import PlaylistDetail from '../Home/Playlist/PlaylistDetail/PlaylistDetail';
 import Test from '../Home/Test/Test';
 import ArtistDetail from '../Home/Artists/ArtistDetail/ArtistDetail'
+import PersonalCenter from '../Home/PersonalCenter/PersonalCenter';
 
 
 const router = new Router({
@@ -62,13 +63,19 @@ const routes = [
     {
         path: '/personal/:id',
         exact: true,
-        component: Test,
+        component: PersonalCenter,
+    },
+    {
+        path: '/personal',
+        exact: true,
+        component: PersonalCenter,
     },
     {
         path: '/artist/:id',
         exact: true,
         component: ArtistDetail
-    }
+    },
+
 ]
 
 export default routes;

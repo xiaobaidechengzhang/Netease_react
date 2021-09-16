@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef  } from "react";
 import { Input, Pagination } from 'antd'
 import { useParams } from 'react-router-dom'
-import "./PlaylistDetail.less";
+import "../../Playlist/PlaylistDetail/PlaylistDetail.less";
 import HTTPUtils from "../../../HTTPUtils/HTTPUtils";
 import { exchangeTime, exchangeDuration } from "@/Utils";
 // import {AddWhitePng, PlayPng, SharePng, DownloadPng, DownPng, UpPng, ShoucangPng, NoShoucangPng, NoZanPng, ZanPng, ShareRound, CommentRoundPng, GenderMale, GenderFemale,  } from '../../../images/Playlist'
@@ -21,7 +21,7 @@ import ShareRound from "@/images/Playlist/share-round.png";
 import CommentRoundPng from "@/images/Playlist/comment-round.png";
 import GenderMale from "@/images/Playlist/gender-male.png";
 import GenderFemale from "@/images/Playlist/gender-female.png";
-import MyTextarea from './MyTextarea';
+import MyTextarea from '../../Playlist/PlaylistDetail/MyTextarea';
 //react相关插件 数据
 import { withRouter } from "react-router";
 import { connect } from 'react-redux';
@@ -29,7 +29,7 @@ import { addToPlaylist, deleteAllSongs, deleteSong, getSongs, setSongs, setActiv
 
 let is_scroll_listener = null;
 
-function PlaylistDetail(props) {
+function AblumsDetail(props) {
   //Ref
   const playlistDetailRef = useRef();
   //歌单id: 6781111608
@@ -45,20 +45,13 @@ function PlaylistDetail(props) {
   /**
    * 歌单数据
    */
+  const [albumCount, setAlbumCount] = useState({})//专辑收藏数, 分享数, 评论数
   const [basicData, setBasicData] = useState({}); //歌单基本信息(封面, 描述, 创建者etc)
   const [songsData, setSongsData] = useState([]); //获取歌单中已加载的歌曲列表
   const [allSongsData, setAllSongsData] = useState([]);//歌单中所有歌曲的信息
   const [songsIdData, setSongsIdData] = useState([]);//所有歌曲track id;
   const [currentPage, setCurrentPage] = useState(1);//当前页数
   const [pageSize, setPageSize] = useState(40);//每页显示数量
-
-  /**
-   * 收藏者数据
-   */
-  const [subscribersData, setSubscribersData] = useState([]); //收藏者数据
-  const [subcribersPage, setSubcribersPage] = useState(1);//收藏者数据
-  const [hasMoreSubcribers, setHasMoreSubcribers]= useState(true);//是否还有更多收藏者数据
-  const [subcribersTotalCount, setSubcribersTotalCount] = useState(0)
 
 
   /**
@@ -85,21 +78,32 @@ function PlaylistDetail(props) {
   };
 
   /**
-   * 歌单歌曲列表事件
+   * 专辑列表事件
    */
 
-  //事件---歌单列表相关数据
-  const getPlaylistDetail = async () => {
+  //事件---专辑相关数据(收藏数, 分享数, 评论数)
+  const getAlbumBasicData = async () => {
     // let id = "5472305020";
     let params = {
       id,
       offset: '100'
     };
-    let data = await HTTPUtils.playlist_detail(params);
-    setBasicData(data?.playlist);
-    setSongsIdData(data?.playlist?.trackIds)
-    setSubscribersData(data?.playlist?.subscribers);
-    setSubcribersTotalCount(data.playlist?.subscribedCount)
+    // let data = await HTTPUtils.playlist_detail(params);
+    let data = await HTTPUtils.album_detail_dynamic(params);
+    setAlbumCount(data)
+  };
+  //事件---歌单列表相关数据
+  const getAlbumDetailData = async () => {
+    // let id = "5472305020";
+    let params = {
+      id,
+    };
+    // let data = await HTTPUtils.playlist_detail(params);
+    let data = await HTTPUtils.album(params);
+    console.log('专辑相关数据223323');
+    console.log(data);
+    setBasicData(data.album);
+    setSongsData(data.songs)
   };
   //事件--双击歌曲播放歌曲
   const playSong = (data) => {
@@ -211,7 +215,9 @@ function PlaylistDetail(props) {
       //已经没有更多评论了, 不用再请求接口了
       return;
     }
-    let data = await HTTPUtils.comment_playlist(params);
+    let data = await HTTPUtils.comment_album(params);
+    console.log('专辑评论数据');
+    console.log(data);
     if(data.hotComments) {
       setHotCommentData(data.hotComments);
     }
@@ -241,9 +247,6 @@ function PlaylistDetail(props) {
       if(tabIndex == 2) {
         //加载新的评论数据
         setCommentPage(commentPage+1)
-      }else if(tabIndex == 3) {
-        //加载新的收藏者数据
-        setSubcribersPage(subcribersPage+1)
       }
     }
   }, [arriveBottom])
@@ -290,51 +293,12 @@ function PlaylistDetail(props) {
     }
   }
 
-
-  /**
-   * 歌单收藏者系列事件
-   */
-  //获取歌单收藏者
-  const getPlaylistSubcribers = async () => {
-    let params = {
-      id,
-      offset: (subcribersPage-1) * 20
-    }
-    let data = await HTTPUtils.playlist_subscribers(params);
-    console.log('获取歌单收藏者');
-    console.log(data);
-    if(!hasMoreSubcribers) {
-      return;
-    }
-    let newSubscribersData = subcribersPage == 1 ? data.subscribers : subscribersData.concat(data.subscribers);
-    setSubscribersData(newSubscribersData)
-    setArriveBottom(false)
-    if(!(data.more)) {
-      setHasMoreSubcribers(false)
-    }
-  }
-  //点击收藏者 进入收藏者个人中心
-  const navigatePersonalCenter = (data) => {
-    let id = data.userId;
-    props.history.push('/personal/'+id)
-  }
-
-  //依赖 页数改变后, 需要加载新的收藏者数据
-  useEffect(() => {
-    getPlaylistSubcribers()
-  }, [subcribersPage])
-
-  useEffect(() => {
-    console.log('收藏者总数是否改变');
-    console.log(subcribersTotalCount);
-  }, [subcribersTotalCount])
-
-
   //进入页面, useEffect事件--只调用一次
   useEffect(async () => {
-    await getPlaylistDetail();
+    await getAlbumBasicData();
+    await getAlbumDetailData()
     await getPlaylistComments();
-    await getPlaylistSubcribers();
+    // await getPlaylistSubcribers();
     playlistDetailRef.current?.addEventListener('scroll', debounceHandleScroll(handleScroll, 300))
   }, []);
   
@@ -428,33 +392,6 @@ function PlaylistDetail(props) {
       </div>
     );
   };
-  //渲染---收藏列表item
-  const CollectionItem = ({ data }) => {
-    return (
-      <div className="collectin-item-container">
-        <div className="collection-item">
-          <img
-            src={data?.avatarUrl + "?param=100y100"}
-            className="collection-item-head-portrait marginHon5"
-            onClick={() => navigatePersonalCenter(data)}
-          />
-          <p className="marginHon5 collection-item-name">{data?.nickname}</p>
-          {data.gender == 1 ? (
-            <img
-              src={GenderMale}
-              className="collection-item-gender marginHon5"
-            />
-          ) : null}
-          {data.gender == 2 ? (
-            <img
-              src={GenderFemale}
-              className="collection-item-gender marginHon5"
-            />
-          ) : null}
-        </div>
-      </div>
-    );
-  };
 
   //渲染--歌单详情主要内容
   const RenderContent = () => {
@@ -463,8 +400,10 @@ function PlaylistDetail(props) {
         return <Content />;
       case "2":
         return <Comment/>;
-      case "3":
-        return <Collection/>;
+      // case "3":
+      //   return <Collection/>;
+      default:
+        break;
     }
   };
   //渲染--歌曲列表
@@ -514,16 +453,6 @@ function PlaylistDetail(props) {
       </div>
     );
   };
-  //收藏者页面
-  const Collection = () => {
-    return (
-      <div className="collection">
-        {subscribersData.map((item, index) => {
-          return <CollectionItem key={item.userId + index.toString()} data={item} />;
-        })}
-      </div>
-    );
-  };
 
   /**
    * 事件
@@ -550,14 +479,14 @@ function PlaylistDetail(props) {
     console.log(data);
   }
 
-  //歌单详情页面
+  //专辑详情页面
   return (
     <div className="playlist-detail" ref={playlistDetailRef}>
       <div className="playlist-detail-header">
         <div className="header-left headerPadding5">
           <img
             className="header-left-img border-radius-20"
-            src={basicData.coverImgUrl}
+            src={basicData.picUrl + '?param=200y200'}
           />
         </div>
         <div className="header-right">
@@ -566,7 +495,7 @@ function PlaylistDetail(props) {
               className="border-text headerPadding5"
               style={{ borderRadius: 5 }}
             >
-              歌单
+              专辑
             </span>
             <span className="playlist-name headerPadding5">
               {basicData.name}
@@ -574,14 +503,14 @@ function PlaylistDetail(props) {
           </div>
           <div className="headerPadding5 header-right-row lineheight40">
             <img
-              src={basicData.creator?.avatarUrl}
+              src={basicData.artist?.picUrl}
               style={{ width: 40, height: 40, borderRadius: "50%" }}
             />
             <span className="headerPadding5">
-              {basicData.creator?.nickname}
+              {basicData.artist?.name}
             </span>
             <span className="headerPadding5">
-              {exchangeTime(basicData.createTime, 1)}创建
+              {exchangeTime(basicData.publishTime, 1)}创建
             </span>
           </div>
           <div className="headerPadding5 header-right-row ">
@@ -593,13 +522,13 @@ function PlaylistDetail(props) {
             <button className="defineBtn border-radius-20 headerPadding5 marginVer " onClick={subcribePlaylist}>
               <img src={SubPng} className="img25 " />
               <span className="height25Vertical padding5">
-                收藏({subcribersTotalCount})
+                收藏({albumCount.subCount})
               </span>
             </button>
             <button className="defineBtn border-radius-20 headerPadding5 marginVer">
               <img src={ShareRound} className="img25 " />
               <span className="height25Vertical padding5">
-                分享({basicData.shareCount})
+                分享({albumCount.shareCount})
               </span>
             </button>
             <button className="defineBtn border-radius-20 headerPadding5 marginVer">
@@ -607,7 +536,7 @@ function PlaylistDetail(props) {
               <span className="height25Vertical padding5">下载全部</span>
             </button>
           </div>
-          <div className="headerPadding5 header-right-row lineheight50 fongsize20">
+          {/* <div className="headerPadding5 header-right-row lineheight50 fongsize20">
             <span>标签:</span>
             <span style={{ padding: "0 10px" }}>
               {basicData.tags?.map((item, index) => {
@@ -620,12 +549,12 @@ function PlaylistDetail(props) {
                 );
               })}
             </span>
-          </div>
+          </div> */}
           <div className="headerPadding5 header-right-row lineheight50 fongsize20">
-            <span>歌曲数目: {basicData.trackCount}首</span>
-            <span className="marginHon10">
+            <span>歌曲数目: {songsData.length}首</span>
+            {/* <span className="marginHon10">
               播放量: {parseInt(basicData.playCount / 10000)}万
-            </span>
+            </span> */}
           </div>
           <div className="headerPadding5 header-right-row playlist-des">
             <span
@@ -666,14 +595,14 @@ function PlaylistDetail(props) {
             id="2"
             className={`tab ${tabIndex === "2" ? "tab-active" : null}`}
           >
-            评论({basicData.commentCount})
+            评论({albumCount.commentCount})
           </li>
-          <li
+          {/* <li
             id="3"
             className={`tab ${tabIndex === "3" ? "tab-active" : null}`}
           >
             收藏者
-          </li>
+          </li> */}
         </ul>
         <RenderContent />
         {/* <Comment/> */}
@@ -711,10 +640,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const playlistDetailContainer = connect(
+const AblumsDetailContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(PlaylistDetail)
+)(AblumsDetail)
 
-export default withRouter(playlistDetailContainer)
+export default withRouter(AblumsDetailContainer)
 // export default withRouter(PlaylistDetail)

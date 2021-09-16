@@ -1,5 +1,6 @@
 import React, { useState, useEffect,  } from 'react';
 import { useParams } from 'react-router-dom';
+import './SubHome.less'
 import PersonalSuggest from '../PersonalSuggest/PersonalSuggest'
 import Playlist from '../Playlist/Playlist';
 import Toplist from '../Toplist/Toplist';
@@ -13,6 +14,11 @@ import ArtistDetail from '../Artists/ArtistDetail/ArtistDetail'
 import PersonalCenter from '../PersonalCenter/PersonalCenter';
 import Search from '../../Search/Search';
 import VideoSlider from '../../VideoSlider/VideoSlider';
+import MVDetail from '../MVDetail/MVDetail';
+import VideoDetail from '../VideoDetail/VideoDetail';
+import Video from '../../Video/Video/Video';
+import MV from '../../Video/MV/MV';
+
 
 export default function SubHome(props) {
     let { id } = useParams();
@@ -21,7 +27,7 @@ export default function SubHome(props) {
 
     return (
         <div
-            style={{margin: '0 20px'}}
+            className='subhomepage'
         >
             {
                 id == 0 ?
@@ -49,8 +55,12 @@ export default function SubHome(props) {
             }
             {
                 id!= 0 && id != 1 && id !=2 && id != 3 ?
-                <VideoSlider/>
-                // <NewestSong/>
+                // <VideoDetail/>
+                // <MVDetail/>
+                // <VideoSlider/>
+                <NewestSong/>
+                // <Video/>
+                // <MV/>
                 // <Search/>
                 // <PlaylistDetail/>
                 // <PersonalCenter/>

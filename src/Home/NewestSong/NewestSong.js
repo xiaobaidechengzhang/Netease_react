@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./NewestSong.less";
 import HTTPUtils from "../../HTTPUtils/HTTPUtils";
 import PlayActiveImg from "../../images/music/play-active.png";
 import SubImg from "../../images/NewestSong/sub.png";
 import PlayHoverImg from "../../images/Playlist/play_hover.png";
+import { withRouter } from "react-router";
 
 const getDate = () => {
   let date = new Date();
@@ -15,7 +16,9 @@ const getDate = () => {
   };
   return obj;
 };
-export default function NewestSong(props) {
+function NewestSong(props) {
+  //组件ref
+  const NewSongRef = useRef()
   const [activeTab, setActiveTab] = useState(1); //当前选中的tab; 1为新歌速递; 2位新碟上架
   const [areaCat, setAreaCat] = useState([
     {
@@ -46,6 +49,7 @@ export default function NewestSong(props) {
   }); //请求新碟上架数据所需要的参数year和month
   const [temMonthData, setTemMonthData] = useState({}); //存储每次数据请求返回的月数据monthData;
   const [allData, setAllData] = useState([]); //所有新碟上架数据
+  const [arriveBottom, setArriveBottom] = useState(false);//是否到达底部, 用于滚动加在数据
   /**
    *
    * @param {Number} tab : 选择的tab; 1为新歌速递; 2位新碟上架
@@ -98,29 +102,36 @@ export default function NewestSong(props) {
   };
   /**
    *
-   * @param {Object} data : 生成指定结构的数据{title: String, year: String, month: String, week: Boolean, list: Array}
+   * @param {Object} data : 生成指定结构的数据{title(标题): String, year(年份): String, month(月份): String, week(是否是周数据): Boolean, list(数据): Array}
    * 组合数据, 同一时间段, 在相应时间的对象中, 滑动加载, 添加数据; 如果没有更多数据, 那么添加更早时间段, 并请求相应时间段数据, 以此循环
+   * 第一次加载时, 会返回本周新碟和本月数据, , 
    */
   const geneCorStucData = async (data) => {
     //如果是最新数据, 则有weekData数据,
+    //这里判断是否传入data, 是因为第一次加载数据, 会有本周新碟数据和本月新碟数据, 先处理本周新碟数据, 本月新碟数据会先存入临时月数据temMonthData中
+    console.log(temMonthData);
     let tem = data ? data : temMonthData;
     let newTemData = JSON.parse(JSON.stringify(tem));
     let newAllData = JSON.parse(JSON.stringify(allData));
+    //是否是第一次加载数据, 如果有weekData这个字段, 说明是最新数据, 
     let isNewest = newTemData.hasOwnProperty("weekData");
     let newData = [];
     let obj = {};
+    console.log(isNewest);
+    console.log(newTemData);
+    console.log(data);
     if (isNewest) {
       if (newAllData.length == 0) {
+        //第一次加载数据, 
         obj.title = "本周新碟";
         obj.week = true;
         obj.year = paramsDate.year;
         obj.month = paramsDate.month;
         obj.list = [];
         obj.list = newTemData.weekData.splice(0, 20);
-        console.log("第一次加载");
-        console.log(obj);
         newAllData.push(obj);
       } else {
+        console.log('new all data length not 0');
         if (newAllData[newAllData.length - 1].week) {
           if (newTemData.weekData.length != 0) {
             newAllData[newAllData.length - 1].list = newAllData[
@@ -157,7 +168,6 @@ export default function NewestSong(props) {
         }
       }
     } else {
-      console.log(paramsDate)
       if (
         newAllData[newAllData.length - 1]?.year == paramsDate.year &&
         newAllData[newAllData.length - 1]?.month == paramsDate.month
@@ -205,6 +215,7 @@ export default function NewestSong(props) {
         newAllData.push(obj);
       }
     }
+    console.log(newTemData);
     setTemMonthData(newTemData);
     setAllData(newAllData);
     let intersectionObserver = new IntersectionObserver(function(entries) {
@@ -213,7 +224,7 @@ export default function NewestSong(props) {
           let realUrl = item.target.getAttribute('data-imgurl');
           let temUrl = item.target.src;
           if(temUrl != realUrl) {
-            realUrl = realUrl +'?param=140y140';
+            realUrl = realUrl +'?param=240y240';
             item.target.setAttribute('src', realUrl)
           }
         }
@@ -230,6 +241,8 @@ export default function NewestSong(props) {
    */
   const getTopAlbum = async (params) => {
     let data = await HTTPUtils.top_album(params);
+    console.log('获取新碟上架数据');
+    console.log(data);
     geneCorStucData(data);
     // setTemMonthData(data);
     // setTemMonthData(async (x) => {
@@ -274,6 +287,12 @@ export default function NewestSong(props) {
     }
     return val;
   };
+
+  //点击碟item, 进入专辑详情页面
+  const navigateAlbumDetail = (item) => {
+    props.history.push('/album/'+item.id)
+  }
+
   /**
    * 依赖项paramsDate, 每次变化都要重新获取新碟数据(第一次请求或者获取上一月新碟上架数据)
    */
@@ -281,20 +300,24 @@ export default function NewestSong(props) {
     let params = JSON.parse(JSON.stringify(paramsDate));
     params.type = "new";
     params.area = getAlbumArea();
-    // await getTopAlbum(params)
+    await getTopAlbum(params)
   }, [paramsDate]);
   /**
    * 依赖项activeCat, 每次变化, 都要将请求参数paramsDate中的year和month更新成最新年月
    */
   useEffect(() => {
-    let obj = getDate();
+    let obj = getDate()
     setParamsDate(obj);
+    setTemMonthData({})
+    setAllData([])
+    setArriveBottom(false)
   }, [activeCat]);
   /**
    * 页面加载完成后, 请求数据, 只执行一次
    */
   useEffect(async () => {
     let intersectionObserver = new IntersectionObserver(function(entries) {
+      //监听elem是否到达可视区域,
       entries.forEach((item, index) => {
         if(item.intersectionRatio > 0) {
           let realUrl = item.target.getAttribute('data-imgurl');
@@ -310,48 +333,32 @@ export default function NewestSong(props) {
     eles.forEach((item, index) => {
       intersectionObserver.observe(item)
     })
+    console.log(getDate().year);
+    console.log(getDate().month);
     let params = {
       limit: "10",
       area: "ALL",
       type: "new",
-      year: "2021",
-      month: "5",
+      year: getDate().year.toString(),
+      month: getDate().month.toString(),
     };
     await getTopAlbum(params);
+    if(NewSongRef.current) {
+      //   NewSongRef.current.onscroll = throttle(doSomething, 500);
+        NewSongRef.current.addEventListener('scroll', throttle(doSomething, 500))
+      }
   }, []);
-  // window.onscroll = () => {
-  //   console.log('滚动 滚动')
-  //   let eles = document.querySelectorAll("#ele");
-  //   let inh = window.innerHeight;
-  //   let sct = document.documentElement.scrollTop || document.body.scrollTop;
-  //   // console.log('距离顶部, ', top);
-  //   // console.log('可视窗口高度, ', inh);
-  //   // console.log('滚动距离, ', sct)
-  //   // console.log(eles[0].querySelectorAll('#pp')[0].getAttribute('src'))
-  //   // let ele
-  //   eles.forEach((ele, index) => {
-  //     let top = ele.offsetTop;
-  //     let pp = ele.querySelectorAll("#pp")[0];
-  //     // console.log(pp)
-  //     // console.log(pp.style.src)
-  //     // console.log(pp.style['data-imgurl'])
-  //     console.log(pp.src)
-  //     if (ele.offsetTop < (sct + inh) && (top+350)  > sct) {
-  //       if(pp.src != pp.getAttribute('data-imgurl')) {
-  //         console.log(pp.getAttribute('data-imgurl'))
-  //         pp.src = pp.getAttribute('data-imgurl');
-  //       }
-  //       // console.log("可视区域之内");
-  //       // pp.style.display = "block";
-  //     } else {
-  //       // console.log("可视范围以外");
-  //       // pp.style.display = "none";
-  //     }
-  //   })
-  // };
-  // window.onscroll = () => {
-  //   console.log('滚动 滚动')
-  // }
+  
+
+  //依赖--arriveBottom, 是否到达底部, 用于滚动加载数据的一句
+  useEffect(() => {
+    if(arriveBottom) {
+      geneCorStucData()
+      setArriveBottom(false)
+    }
+  }, [arriveBottom])
+
+
   const throttle = (func, delay) => {
     let isValid = false;
     return function () {
@@ -365,20 +372,22 @@ export default function NewestSong(props) {
       }, delay);
     };
   };
+  //滚动加载-到达底部事件, 设置arriveBottom为true
   const doSomething = () => {
     let scrH =
-      document.documentElement.scrollHeight || document.body.scrollHeight;
+    NewSongRef.current.scrollHeight;
     let cliH =
-      document.documentElement.clientHeight || document.body.clientHeight;
-    let scrTop = document.documentElement.scrollTop || document.body.scrollTop;
-    if (scrTop + 1000 > scrH - cliH) {
-      console.log("将要到达底部");
-      geneCorStucData();
+      NewSongRef.current.clientHeight;
+    let scrTop = NewSongRef.current.scrollTop;
+    if (scrTop + 100 > scrH - cliH) {
+      // geneCorStucData();
+      console.log('到达底部1111');
+      setArriveBottom(true)
     }
   };
-  window.onscroll = throttle(doSomething, 500);
+  
   return (
-    <div className="newestSong">
+    <div className="newestSong" ref={NewSongRef}>
       <div className="newestSongTabs">
         <span className="newestSongTabsCon">
           <span
@@ -395,7 +404,7 @@ export default function NewestSong(props) {
             } `}
             onClick={() => selectTab(2)}
           >
-            新碟商家
+            新碟上架
           </span>
         </span>
       </div>
@@ -451,7 +460,7 @@ export default function NewestSong(props) {
                 >
                   {item.list && item.list.map((zItem, zIndex) => {
                     return (
-                      <div id="ele" className='songsListNewItemRightItem' key={zItem.id+'-'+zIndex}>
+                      <div id="ele" className='songsListNewItemRightItem is_album' data-album={zItem.id} key={zItem.id+'-'+zIndex} onClick={navigateAlbumDetail.bind(this, zItem)}>
                         <div
                           className='songsListNewItemRightItemImgCon'
                         >
@@ -487,3 +496,4 @@ export default function NewestSong(props) {
   );
 }
 
+export default withRouter(NewestSong)

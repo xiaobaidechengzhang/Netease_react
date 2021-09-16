@@ -132,6 +132,18 @@ function ContextMenu(props) {
         break;
       case '9':
         console.log('MV');
+        console.log(songData.id);
+        console.log(props.data);
+        props.history.push('/mv/'+props.data.id)
+        break;
+      case '11':
+        console.log('video');
+        console.log(props.data.id);
+        props.history.push('/video/'+props.data.id)
+        break;
+      case '12':
+        props.history.push('/album/'+props.data.id)
+      default:
         break;
     }
   }
@@ -163,6 +175,18 @@ function ContextMenu(props) {
         return(
           <ul className='actionList'>
             <li className='actionListItem' id='9'>播放MV</li>
+          </ul>
+        )
+      case 4:
+        return(
+          <ul className='actionList'>
+            <li className='actionListItem' id='11'>播放视频</li>
+          </ul>
+        )
+      case 5:
+        return (
+          <ul className='actionList'>
+            <li className='actionListItem' id='12'>查看专辑</li>
           </ul>
         )
       default:

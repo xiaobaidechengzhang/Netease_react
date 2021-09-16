@@ -78,8 +78,9 @@ function PersonalSuggest(props) {
       return;
     }
     let list = data.banners;
-    list.length = 3;
-    console.log(list);
+    let len = list.length;
+    let loopCount = Math.floor(len/3);
+    list.length = loopCount * 3;
     setBannerData(list);
   };
   /**
@@ -205,6 +206,11 @@ function PersonalSuggest(props) {
     props.history.push('/personal')
   }
 
+  //进入MV详情页面
+  const navigateMVDetail = (item) => {
+    props.history.push('/mv/'+item.id)
+  }
+
   return (
     <div>
       <Button onClick={navigatePersonalCenter}>导航进入个人中心</Button>
@@ -271,7 +277,7 @@ function PersonalSuggest(props) {
           </div>
         </div>
       </div>
-      <div className="headerTitle">
+      {/* <div className="headerTitle">
         <p className="headerTitleContent">视频标签列表</p>
       </div>
       <div
@@ -304,7 +310,7 @@ function PersonalSuggest(props) {
         <p style={{ color: "red", textAlign: "right", padding: "0 20px" }}>
           展开
         </p>
-      </div>
+      </div> */}
       <div className="headerTitle">
         <p className="headerTitleContent">独家放送</p>
       </div>
@@ -313,7 +319,9 @@ function PersonalSuggest(props) {
           return (
             <div
               key={item.id}
-              className="playlistItem min30PlaylistItem"
+              className="playlistItem min30PlaylistItem is_mv"
+              data-mv={item.id}
+              onClick={() => navigateMVDetail(item)}
             // onMouseOver={() => playlistOver(item.id, 1)}
             // onMouseOut={() => playlistOver(item.id, 2)}
             >
@@ -339,7 +347,9 @@ function PersonalSuggest(props) {
           return (
             <div
               key={item.id}
-              className="playlistItem min30PlaylistItem"
+              className="playlistItem min30PlaylistItem is_mv"
+              data-mv={item.id}
+              onClick={() => navigateMVDetail(item)}
             // onMouseOver={() => playlistOver(item.id, 1)}
             // onMouseOut={() => playlistOver(item.id, 2)}
             >
@@ -366,8 +376,10 @@ function PersonalSuggest(props) {
             <div
               key={item.id}
               className="playlistItem min20PlaylistItem is_mv"
+              onClick={() => navigateMVDetail(item)}
             // onMouseOver={() => playlistOver(item.id, 1)}
             // onMouseOut={() => playlistOver(item.id, 2)}
+              data-mv={item.id}
             >
               <div className="playlistItemContent">
                 <img

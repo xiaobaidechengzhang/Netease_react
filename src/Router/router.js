@@ -8,6 +8,9 @@ import PlaylistDetail from '../Home/Playlist/PlaylistDetail/PlaylistDetail';
 import Test from '../Home/Test/Test';
 import ArtistDetail from '../Home/Artists/ArtistDetail/ArtistDetail'
 import PersonalCenter from '../Home/PersonalCenter/PersonalCenter';
+import MVDetail from '../Home/MVDetail/MVDetail';
+import VideoDetail from '../Home/VideoDetail/VideoDetail';
+import AlbumsDetail from '../Home/NewestSong/AlbumsDetail/AlbumsDetail';
 
 
 const router = new Router({
@@ -74,6 +77,21 @@ const routes = [
         path: '/artist/:id',
         exact: true,
         component: ArtistDetail
+    },
+    {
+        path: '/mv/:id',
+        exact: true,
+        component: MVDetail
+    },
+    {
+        path: '/video/:id',
+        exact: true,
+        component: VideoDetail
+    },
+    {
+        path: '/album/:id',
+        exact: true,
+        component: AlbumsDetail
     },
 
 ]

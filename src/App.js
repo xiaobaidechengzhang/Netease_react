@@ -39,11 +39,17 @@ function App(props) {
 
       //判断是否是歌单elem, 同样的判断方式, 来判断是否有类名is_playlist,
       let is_playlist = $(event.target).parents('.is_playlist').length > 0 || $(event.target).hasClass('is_playlist')
+      
+      //判断是否是专辑elem, 同样的判断方式, 来判断是否有类名is_album,
+      let is_album = $(event.target).parents('.is_album').length > 0 || $(event.target).hasClass('is_album')
 
       //判断是否是MV, 同样的方式, 来判断是否有类名is_mv;
       let is_mv = $(event.target).parents('.is_mv').length > 0 || $(event.target).hasClass('is_mv');
 
-      if(is_song || is_playlist || is_mv) {
+      //判断是否是Video, 同样的方式, 来判断是否有类名is_video;
+      let is_video = $(event.target).parents('.is_video').length > 0 || $(event.target).hasClass('is_mv');
+
+      if(is_song || is_playlist || is_mv || is_video || is_album) {
 
         event.preventDefault();
 
@@ -52,29 +58,50 @@ function App(props) {
         //获取歌曲数据
         let songData = $(event.target).hasClass('is_song') ? $(event.target).data('song') : $(event.target).parents('.is_song').data('song')
         // songData = JSON.parse(songData)
-        console.log('歌曲数据');
-        console.log(typeof songData);
-        console.log(songData);
 
         //获取歌单数据
         let playlistId = $(event.target).hasClass('is_playlist') ? $(event.target).data('playlist') : $(event.target).parents('.is_playlist').data('playlist')
+        let albumId = $(event.target).hasClass('is_album') ? $(event.target).data('album') : $(event.target).parents('.is_album').data('album')
+        //获取MV数据
+        let mvId = $(event.target).hasClass('is_mv') ? $(event.target).data('mv') : $(event.target).parents('.is_mv').data('mv')
+        //获取Video数据
+        let videoId = $(event.target).hasClass('is_video') ? $(event.target).data('mv') : $(event.target).parents('.is_video').data('video')
         let playlistData = {id: playlistId};
+        let mvData = {id: mvId}
+        let videoData = {id: videoId}
+        let albumData = {id: albumId};
 
+        //menuType: 存储类型的boolean值
+        let menuType = [is_song, is_playlist, is_mv, is_video, is_album];
+        let typeIndex = menuType.findIndex(item => item == true);
+        //因为数组从0开始, 所以得出结果后, 需要与设定的type进行数据
+        if(typeIndex != -1) {
+          typeIndex = typeIndex + 1;
+        }else {
+          typeIndex = menuType.length + 1;
+        }
+        let type = typeIndex;
+
+        //menuData: Object, 存储的是对应类型的数据
+        let menuData = {
+          '1': songData,
+          '2': playlistData,
+          '3': mvData,
+          '4': videoData,
+          '5': albumData
+        }
+        menuTransferData = menuData[type]
         //设置需要传递给context menu的类型和数据
-        let type = is_song ? 1 : (is_playlist ? 2 : 3)
-        menuTransferData = is_song ? songData : (is_playlist ? playlistData : {})
+        // let type = is_song ? 1 : (is_playlist ? 2 : (is_mv ? 3 : 4))
+        // menuTransferData = is_song ? songData : (is_playlist ? playlistData : (is_mv ? mvData : videoData))
         menuTransferData.delete = false;
         let can_delete = false;
         if(is_song) {
           let have_sliderplay_class = $(event.target).hasClass('.is_sliderplaylist') || $(event.target).parents('.is_sliderplaylist').length > 0;
-          console.log('是否可删除');
-          console.log(have_sliderplay_class);
           can_delete = have_sliderplay_class
           //menuTransferData的delete字段 主要是为了歌曲的context menu中有没有从列表中删除选项, delete: true为有从列表中删除选项; false为没有从列表中删除选项
           menuTransferData.delete = have_sliderplay_class;
         }
-        console.log('menu transfer data');
-        console.log(menuTransferData);
 
         //获取鼠标的位置, clientX: 距离浏览器可视区域左边的距离; clientY: 距离浏览器可视区域顶部的距离
         let left = event.clientX;
@@ -101,20 +128,11 @@ function App(props) {
 
         //然后获取距离浏览器底部距离是否小于自定义context menu的高度400;
         let is_shorter_contextmenu_height = top  + relative_type_height > $('#root').height();
-        console.log(is_shorter_contextmenu_height);
-        console.log(top);
         if(is_shorter_contextmenu_height) {
           //如果超过document的高度, 那么top就反方向朝上显示
           top -= relative_type_height;
         }
         //设置context menu 的位置和elem的高度
-        console.log('css 信息');
-        console.log(left);
-        console.log(scrollLeft);
-        console.log(top);
-        console.log(scrollTop);
-        console.log(relative_type_height);
-        console.log($('#root').height());
         $('#contextmenu').css({left: left+ scrollLeft + 10, top: top + scrollTop + 10, height: relative_type_height})
         setContextMenuType(type)
         setContextMenuData(menuTransferData)
@@ -141,7 +159,7 @@ function App(props) {
         {/* <MusicSlider /> */}
         {/* <Home/> */}
         {/* <RouterOutlet/> */}
-        {showSlider ? <div style={{ height: 120 }}>
+        {showSlider ? <div style={{ height: 100 }}>
 
         </div> : null}
         {showSlider ? <div style={{ position: 'fixed', width: '100%', height: 100, backgroundColor: 'blue', bottom: '0', left: 0, boxShadow: '0 0 5px #ccc', zIndex: 100 }}>

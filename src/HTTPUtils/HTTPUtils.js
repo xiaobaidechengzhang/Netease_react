@@ -938,7 +938,7 @@ HTTPUtils.video_timeline_recommend = async function(obj) {
 }
 //获取相关视频
 HTTPUtils.related_video = async function(obj) {
-    let url = server + '/related/video';
+    let url = server + '/related/allvideo';
     let data = await Http.Get(url, obj);
     return data;
 }

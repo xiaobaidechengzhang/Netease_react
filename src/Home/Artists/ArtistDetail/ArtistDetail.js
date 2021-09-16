@@ -20,6 +20,8 @@ const { exchangeTime, exchangeDuration } = require("@/Utils/ExchangeTime");
 function ArtistDetail(props) {
   //歌手数据
   const { id } = useParams();
+  //专辑id
+  const [artistID, setArtistID] = useState(-1)
   //歌手详情中 tabs 选中哪个标签  1->4; 专辑->相似歌手
   const [tabIndex, setTabIndex] = useState("1");
   //专辑列表浏览模式--1->3; 图列模式->列表模式->大图模式
@@ -48,6 +50,8 @@ function ArtistDetail(props) {
   const [hasMVMore, setHasMVMore] = useState(true);
   //歌手详情-整个页面ref
   const artistDetailRef = useRef();
+  //是否重置数据
+  const [isOnReset, setIsOnReset] = useState(false);
 
   //事件---展开/收起歌单简介
   const changeDesExpand = () => {
@@ -70,6 +74,8 @@ function ArtistDetail(props) {
 
   //事件---获取歌手详情数据 例如id='3684';
   const getArtistDetail = async () => {
+    console.log('id');
+    console.log(id);
     let params = {
       id: id,
     };
@@ -83,6 +89,9 @@ function ArtistDetail(props) {
       id: id,
     };
     let data = await HTTPUtils.simi_artist(params);
+    console.log('相似歌手');
+    console.log(id);
+    console.log(data);
     setSimiArtistData(data.artists);
   };
 
@@ -120,12 +129,15 @@ function ArtistDetail(props) {
     if (!hasMore) {
       return false;
     }
+    console.log('歌手id');
+    console.log(id);
     let params = {
       id: id,
       limit: "5",
       offset: albumsOffset * 5,
     };
     let data = await HTTPUtils.artist_album(params);
+    console.log(hotAlbumsData);
     let hotalbums = data.hotAlbums;
     if (!data.more) {
       setHasMore(false);
@@ -179,14 +191,99 @@ function ArtistDetail(props) {
     }
     setExpandAlbumsArr(expandArr);
   };
-  //页面进入--只进行一次渲染
+
+  //事件--相似歌手进入相应歌手详情页面
+  const navigateArtistDetail = (item) => {
+    console.log('导航');
+    console.log(props.history)
+    props.history.replace('/artist/' + item.id)
+  }
+
+  //重置数据
+  // const resetData = async () => {
+  //   setIsOnReset(true)
+  //   setTabIndex('1');
+  //   setModalIndex('1');
+  //   setDesExpand(false);
+  //   setArtistMV([]);
+  //   setHotAlbumsData([]);
+  //   setExpandAlbumsArr([]);
+  //   setAlbumOffset(0);
+  //   setHasMore(true);
+  //   setMVOffset(0);
+  //   setHasMVMore(true)
+  //   console.log('reset data');
+  // }
+
+  // useEffect(async () => {
+  //   console.log('变化 tab index');
+  //   console.log(isOnReset);
+  //   if (isOnReset) {
+  //     await getArtistDetail();
+  //     await getSimiArtist();
+  //     await getArtistDetailDesc();
+  //     await getArtistMV();
+  //     await getArtistAlbum();
+  //     setIsOnReset(false)
+  //   }
+  // }, [isOnReset])
+
   useEffect(async () => {
     await getArtistDetail();
     await getSimiArtist();
     await getArtistDetailDesc();
     await getArtistMV();
     await getArtistAlbum();
-    //不能用addEventListener,
+  }, [artistID])
+
+  //依赖 歌手id变化, 也要获取新的歌手数据
+  useEffect(async () => {
+    console.log('变化 id id id');
+    if (artistID != id) {
+      //在id变化后, 获取数据之前需要将变量恢复初始状态
+      setTabIndex('1');
+      setModalIndex('1');
+      setDesExpand(false);
+      setArtistMV([]);
+      setHotAlbumsData([]);
+      setExpandAlbumsArr([]);
+      setAlbumOffset(0);
+      setHasMore(true);
+      setMVOffset(0);
+      setHasMVMore(true)
+      setArtistID(id)
+    }
+    // console.log(id);
+    // // await resetData()
+    // setIsOnReset(true)
+    // setTabIndex('1');
+    // setModalIndex('1');
+    // setDesExpand(false);
+    // setArtistMV([]);
+    // setHotAlbumsData([]);
+    // setExpandAlbumsArr([]);
+    // setAlbumOffset(0);
+    // setHasMore(true);
+    // setMVOffset(0);
+    // setHasMVMore(true)
+    // await getArtistDetail();
+    // await getSimiArtist();
+    // await getArtistDetailDesc();
+    // await getArtistMV();
+    // await getArtistAlbum();
+  }, [id])
+
+  //页面进入--只进行一次渲染
+  useEffect(async () => {
+    // setIsOnReset(false)
+    console.log('id id');
+    console.log(id);
+    await getArtistDetail();
+    await getSimiArtist();
+    await getArtistDetailDesc();
+    await getArtistMV();
+    await getArtistAlbum();
+    //不能用addEventListener, 也可以
     window.onscroll = throttle(scrollBottomLoadingAlbum, 1000);
   }, []);
   //节流-节流
@@ -253,9 +350,8 @@ function ArtistDetail(props) {
     return (
       <ul
         // className={`content-header fontsize18 canSelectItem`}
-        className={`content-header fontsize18 is_song canSelectItem ${
-          (parseInt(index) - 1) % 2 == 0 ? "backGray" : ""
-        }`}
+        className={`content-header fontsize18 is_song canSelectItem ${(parseInt(index) - 1) % 2 == 0 ? "backGray" : ""
+          }`}
         tabIndex="1"
         data-song={JSON.stringify(item)}
       >
@@ -295,7 +391,7 @@ function ArtistDetail(props) {
   const PiclistModal = ({ item, index }) => {
     return (
       <div style={{ position: "relative" }} className="piclistModal">
-        <div className="header-left">
+        <div className="header-left is_album" data-album={item.id}>
           <img
             key={item.picId_str}
             src={item.picUrl + "?param=150y150"}
@@ -303,11 +399,10 @@ function ArtistDetail(props) {
           />
         </div>
         <div
-          className={`header-right list-right ${
-            !(expandAlbumsArr[index] && expandAlbumsArr[index][item.id])
-              ? "list-right-750"
-              : "list-right-height-auto"
-          } `}
+          className={`header-right list-right ${!(expandAlbumsArr[index] && expandAlbumsArr[index][item.id])
+            ? "list-right-750"
+            : "list-right-height-auto"
+            } `}
         >
           <ul className="list-right-tabs">
             <li className="list-right-tab font-weight-20">{item.name}</li>
@@ -351,11 +446,10 @@ function ArtistDetail(props) {
   const ListModalItem = ({ item, index }) => {
     return (
       <li
-        className={`listModal-list-item is_playlist canSelectItem ${
-          index % 2 == 0 ? "backGray" : ""
-        }`}
+        className={`listModal-list-item is_ablum canSelectItem ${index % 2 == 0 ? "backGray" : ""
+          }`}
         tabIndex={index}
-        data-playlist={item.id}
+        data-album={item.id}
       >
         <ul className="listModal-list-item-container">
           <li className="list-item list-item-left">
@@ -396,7 +490,7 @@ function ArtistDetail(props) {
   //渲染--专辑列表--大图模式--item
   const PicModalItem = ({ item, index }) => {
     return (
-      <li className="picmodal-list-item is_playlist" data-playlist={JSON.stringify(item)}>
+      <li className="picmodal-list-item is_album" data-album={item.id}>
         <div className="picmodal-list-item-container">
           <img src={item.picUrl + "?param=250y150"} className="list-item-img" />
           <p className="list-item-title">{item.name}</p>
@@ -525,7 +619,7 @@ function ArtistDetail(props) {
   //渲染--相似歌手--item
   const SimilarListItem = ({ item, index }) => {
     return (
-      <div className="similar-artist-list">
+      <div className="similar-artist-list" onClick={navigateArtistDetail.bind(this, item)}>
         <div className="list-item">
           <img
             key={item.picId_str}
@@ -602,33 +696,29 @@ function ArtistDetail(props) {
       <div className="artist-detail-tabs-container">
         <ul className="artist-detail-tabs" onClick={changeTabIndex}>
           <li
-            className={`artist-detail-tab ${
-              tabIndex == "1" ? "artist-detail-tab-active" : null
-            }`}
+            className={`artist-detail-tab ${tabIndex == "1" ? "artist-detail-tab-active" : null
+              }`}
             id="1"
           >
             专辑
           </li>
           <li
-            className={`artist-detail-tab ${
-              tabIndex == "2" ? "artist-detail-tab-active" : null
-            }`}
+            className={`artist-detail-tab ${tabIndex == "2" ? "artist-detail-tab-active" : null
+              }`}
             id="2"
           >
             MV
           </li>
           <li
-            className={`artist-detail-tab ${
-              tabIndex == "3" ? "artist-detail-tab-active" : null
-            }`}
+            className={`artist-detail-tab ${tabIndex == "3" ? "artist-detail-tab-active" : null
+              }`}
             id="3"
           >
             歌手详情
           </li>
           <li
-            className={`artist-detail-tab ${
-              tabIndex == "4" ? "artist-detail-tab-active" : null
-            }`}
+            className={`artist-detail-tab ${tabIndex == "4" ? "artist-detail-tab-active" : null
+              }`}
             id="4"
           >
             相似歌手
@@ -638,9 +728,8 @@ function ArtistDetail(props) {
           <ul className="right-imgs" onClick={changeModalIndex}>
             <li
               id="3"
-              className={`right-img-container ${
-                modalIndex == "3" ? "right-img-container-active" : null
-              }`}
+              className={`right-img-container ${modalIndex == "3" ? "right-img-container-active" : null
+                }`}
             >
               <img
                 className="right-img"
@@ -649,9 +738,8 @@ function ArtistDetail(props) {
             </li>
             <li
               id="2"
-              className={`right-img-container ${
-                modalIndex == "2" ? "right-img-container-active" : null
-              }`}
+              className={`right-img-container ${modalIndex == "2" ? "right-img-container-active" : null
+                }`}
             >
               <img
                 className="right-img"
@@ -660,9 +748,8 @@ function ArtistDetail(props) {
             </li>
             <li
               id="1"
-              className={`right-img-container ${
-                modalIndex == "1" ? "right-img-container-active" : null
-              }`}
+              className={`right-img-container ${modalIndex == "1" ? "right-img-container-active" : null
+                }`}
             >
               <img
                 className="right-img"

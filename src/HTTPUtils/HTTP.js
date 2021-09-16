@@ -15,13 +15,11 @@ Http.Get = function(url, params) {
 Http.Post = function(url, params = {}) {
     const method = 'POST';
     const body = JSON.stringify(params);
-    console.log(body)
     const fetchParams = {
         method: method,
         body: body,
 
     }
-    console.log(fetchParams)
     return Http.handleFetchData(url, fetchParams);
 }
 Http.handleFetchData = (url, fetchParams) => {
@@ -60,7 +58,6 @@ Http.handleFetchData = (url, fetchParams) => {
 }
 
 Http.handleResult = (result) => {
-    console.log(result);
     if(result.code != 200 && result.data?.code != 200) {
         const errMsg= result.msg || result.message || '服务器开了小差, 请稍后再试!';
         const errStr = `${errMsg} (${result.code})`;

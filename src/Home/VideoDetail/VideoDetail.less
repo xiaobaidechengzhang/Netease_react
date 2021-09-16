@@ -1,0 +1,240 @@
+@commonColor: #e03a24;
+@commonHoverColor: #f09a9a;
+@commonBorderColor: #e1dede;
+@commonGrayColor: #818181;
+@commonIndexColor: #F9F9F9;
+@commonActiveColor: #e5e5e5;
+@maleBackColor: #C0F3FF;
+@femaleBackColor: #FFCDE8;
+
+.videoDetail {
+  width: 100%;
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  position: relative;
+  .videoDetailContainer {
+    position: absolute;
+    width: 80%;
+    height: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    .mvAndSuggest {
+      display: inline-block;
+      width: 100%;
+      height: 700px;
+      .mvContainer {
+        float: left;
+        width: 62%;
+        height: 100%;
+        padding-top: 45px;
+        text-align: left;
+        .mvArtistInfo {
+          height: 60px;
+          line-height: 60px;
+          text-align: left;
+          .mvArtistInfoImg {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+          p {
+            display: inline-block;
+            margin-left: 20px;
+            color: #aaa;
+          }
+        }
+        .mvName {
+          font-weight: bold;
+          font-size: 25px;
+        }
+        .mvTime {
+          color: #aaa;
+        }
+        .mvDetailActions {
+          padding: 0;
+          margin: 0;
+          li {
+            display: inline-block;
+          }
+          .mvDetailAction {
+    
+          }
+        }
+      }
+      .suggestMVContainer {
+        float: left;
+        width: 30%;
+        height: 100%;
+        margin-left: 20px;
+        .suggestMVList {
+          height: 100%;
+          .suggestMVListItem {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 5px;
+            .toplistItem {
+              float: left;
+              width: 50%;
+              height: 100%; 
+              position: relative;
+              text-align: center;
+              .toplistItemImg {
+                object-fit: cover; 
+                width: 100%;
+                height: 100%;
+              }
+              .toplistItemRight {
+                display: inline-block; 
+                position: absolute; 
+                right: 10px; 
+                top: 10px;
+                color: white;
+                .toplistItemRightImg {
+                  width: 20px; 
+                  height: 20px; 
+                  object-fit: cover;
+                }
+              }
+            }
+            .listItemDesc {
+              float: left;
+              width: 45%;
+              height: 100%;
+              margin-left: 10px;
+              text-align: left;
+              p:nth-child(1) {
+                position: relative;
+                line-height: 20px;
+                height: 40px;
+                max-height: 40px;
+                word-break: break-all;
+              }
+              p:nth-child(2) {
+                margin-top: 20px;
+              }
+            }
+            &::after {
+              content: '';
+              display: block;
+              height: 0;
+              visibility: hidden;
+              overflow: hidden;
+            }
+          }
+        }
+      }
+      &::after {
+        content: '';
+        height: 0;
+        display: block;
+        visibility: hidden;
+        overflow: hidden;
+      }
+    }
+    
+    .comment {
+      display: inline-block;
+      width: 100%;
+      height: auto;
+      padding: 10px;
+      .comment-header {
+        .comment-header-textarea {
+          position: relative;
+          .comment-textarea {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            padding: 5px 10px;
+            border-color: @commonActiveColor;
+            &:focus {
+              outline: none;
+            }
+          }
+          .comment-surplus-length {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            color: @commonActiveColor;
+          }
+        }
+        .comment-header-bottom {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px;
+          .bottom-right-btn {
+            min-width: 50px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            outline: none;
+            border: 1px solid @commonActiveColor;
+            background-color: white;
+            &:hover {
+              cursor: pointer;
+              background-color: @commonIndexColor;
+            }
+          }
+        }
+      }
+      .comment-list {
+        .list-item {
+          height: auto;
+          padding: 20px 0px;
+          position: relative;
+          .commentImg {
+            width: 18px;
+            height: 18px;
+            object-fit: cover;
+          }
+          .list-item-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5%;
+            height: 100%;
+            padding: 20px 0;
+            img {
+              width: 50px;
+              height: 50px;
+              object-fit: cover;
+              border-radius: 50%;
+            }
+          }
+          .list-item-right {
+            position: relative;
+            left: 5%;
+            width: 95%;
+            min-height: 100px;
+            .list-item-reply {
+              padding: 5px 10px;
+              background-color: @commonIndexColor;
+              border-radius: 10px;
+              margin: 5px 0;
+            }
+            .list-item-date {
+              padding: 10px 0;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+              .tipoff {
+                display: none;
+              }
+              .marginHon10 {
+                margin: 0 10px;
+              }
+            }
+            &:hover {
+              .tipoff {
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

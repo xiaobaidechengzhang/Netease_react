@@ -38,8 +38,7 @@ export default function Home(props) {
         setActiveHomeTag(type)
     }
     return (
-        <div
-        >
+        <div className='homePage'>
             <div
                 className='catHeader'
             >
@@ -59,15 +58,6 @@ export default function Home(props) {
                 }
             </div>
             {renderRoutes(props.route.routes)}
-            {/* <Switch>
-                <Route exact path='/'>
-                    <PersonalSuggest/>
-                </Route>
-                <Route path='/:id'>
-                    <SubHome/>
-                </Route>
-            </Switch> */}
-            
         </div>
     )
 }

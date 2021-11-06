@@ -22,6 +22,7 @@ Http.Post = function(url, params = {}) {
     }
     return Http.handleFetchData(url, fetchParams);
 }
+
 Http.handleFetchData = (url, fetchParams) => {
     const fetchPromise = new Promise((resolve, reject) => {
         request()(url, fetchParams).then(
@@ -33,24 +34,31 @@ Http.handleFetchData = (url, fetchParams) => {
                         }else {
                             resolve(Http.handleResult(jsonBody));
                         }
-                    }else {
+                    }
+                    else {
                         let msg = '服务器繁忙, 请稍后再试!';
                         if(response.code === 404) {
                             msg = '你访问的页面走丢了'
                         }
                         // resolve(Http.handleResult({fetchStatus: 'error', netStatus: response.status, error: msg}))
-                        reject(Http.handleFailedResult({fetchStatus: 'error', netStatus: response.code, error: msg}))
-                        message.error(msg);
+                        reject(Http.handleFailedResult({code: response.code, error: msg}))
+                        // message.error(msg);
                     }
-                }).catch(e => {
+                })
+                .catch(e => {
                     const errMsg = e.name + ' ' + e.message;
-                    reject(Http.handleFailedResult({fetchStatus: 'error', netStatus: response.code, error: errMsg}))
-                    message.error(errMsg);
+                    reject(Http.handleFailedResult({code: response.code, error: errMsg}))
+                    // message.error(errMsg);
                 })
             }
-        ).catch(e => {
+        )
+        .catch(e => {
+            console.log('最后捕捉错误')
+            console.log(e)
+            console.log(e.name)
+            console.log(e.message)
             const errMsg = e.name + ' ' + e.message;
-            reject(Http.handleFailedResult({fetchStatus: 'error', error: errMsg}))
+            // reject(Http.handleFailedResult({fetchStatus: 'error', error: errMsg}))
             message.error(errMsg)
         })
     })
@@ -59,7 +67,10 @@ Http.handleFetchData = (url, fetchParams) => {
 
 Http.handleResult = (result) => {
     if(result.code != 200 && result.data?.code != 200) {
-        const errMsg= result.msg || result.message || '服务器开了小差, 请稍后再试!';
+        console.log('处理结果')
+        console.log(result)
+        // const errMsg= result.msg || result.message || '服务器开了小差, 请稍后再试!';
+        const errMsg= result.error;
         const errStr = `${errMsg} (${result.code})`;
         message.error(errStr)
         return;

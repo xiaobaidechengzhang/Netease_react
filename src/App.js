@@ -15,7 +15,9 @@ import Carousel from './widgets/Carousel/Carousel'
 import { RouterOutlet } from 'react-easyroute';
 import { withRouter, Switch, Route, } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
+import { connect } from 'react-redux';
 import $ from 'jquery'
+import { addToPlaylist, setActive } from './store/actions/playlistActions'
 
 function App(props) {
   const [showSlider, setShowSlider] = useState(true);
@@ -114,7 +116,7 @@ function App(props) {
         let scrollLeft = $(document).scrollLeft();
 
         //不同类型, context menu的高度高通
-        let relative_type_height = type == 1 ? (can_delete ? 310 : 260) : (type == 2 ? 160 : 60)
+        let relative_type_height = type == 1 ? (can_delete ? 300 : 250) : (type == 2 ? 150 : 50)
 
         //将自定义的context menu的left和top设为鼠标的位置, top和left都要加上scrollTop和scrollLeft, 否则滚动后, context menu位置不对
         //下面要解决的问题: 如果鼠标位置距离底部/顶部/左边/右边距离小于自定义的context menu的高/宽, 那么要重新调整自定义context menu的位置
@@ -147,6 +149,18 @@ function App(props) {
     $('#contextmenu').blur(function() {
       $(this).hide()
     })
+    let list = localStorage.getItem('playlist')
+    let activeSong = localStorage.getItem('activeSong');
+    activeSong = activeSong ? JSON.parse(activeSong) : null
+    list = list ? JSON.parse(list) : []
+    if(list && (list instanceof Array)) {
+      props.addSong(list)
+    }else {
+      props.addSong([])
+    }
+    if(activeSong) {
+      props.setActiveSong(activeSong)
+    }
   }, [])
   return (
     <ConfigProvider locale={zh_CN}>
@@ -173,4 +187,24 @@ function App(props) {
   );
 }
 
-export default withRouter(App);
+const mapStateToProps = state => {
+  return {}
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addSong: (data) => {
+      dispatch(addToPlaylist(data));
+    },
+    setActiveSong: data => {
+      dispatch(setActive(data))
+    }
+  }
+}
+
+const AppContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+
+export default withRouter(AppContainer);

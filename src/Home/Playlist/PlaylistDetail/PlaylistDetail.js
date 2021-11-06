@@ -26,6 +26,7 @@ import MyTextarea from './MyTextarea';
 import { withRouter } from "react-router";
 import { connect } from 'react-redux';
 import { addToPlaylist, deleteAllSongs, deleteSong, getSongs, setSongs, setActive } from '../../../store/actions/playlistActions'
+import Tools from '@/Utils/Tools'
 
 let is_scroll_listener = null;
 
@@ -545,9 +546,9 @@ function PlaylistDetail(props) {
       t: 1,
       id,
     }
-    let data = await HTTPUtils.playlist_subscribe(params)
+    // let data = await HTTPUtils.playlist_subscribe(params)
     console.log('收藏歌单');
-    console.log(data);
+    // console.log(data);
   }
 
   //歌单详情页面

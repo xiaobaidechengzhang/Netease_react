@@ -5,14 +5,13 @@ import HTTPUtils from '../../HTTPUtils/HTTPUtils';;
 let timer = ''
 export default function Carousel(props) {
     const [index, setIndex] = useState('0');//用于控制class
-    const [left, setLeft] = useState(false)//和index配合使用, 控制class
+    const [left, setLeft] = useState(true)//和index配合使用, 控制class
     const [isHover, setIsHover] = useState(false);//鼠标在组件上, 那么组件就不进行左移/右移
     const [dataStartIndex, setDataStartIndex] = useState(0);//传过来数据, 截取数据的开始index, 第一次进来, 默认为0
     const [bannerData, setBannerData] = useState([])//banner总数据, 
     const [activeBannerData, setActiveBannerData] = useState([]);//当前显示的banner数据
     //点击组件的左侧, banner向左滚动
     const leftClickDiv = () => {
-        console.log('left click')
         //向左滚动, 如果当前位置不是bannerData的最后项, 那么 + 1 ; 如果是第一项, 那么需要设为bannerData的第一项
 
         let bannerDataLength = bannerData.length;
@@ -38,9 +37,6 @@ export default function Carousel(props) {
             } else {
                 dex = 1;
             }
-        }else if(left && dex == '0') {
-            //第一次进入页面, 此时index还处于0, 且left为true的时候, 此时需要将index设为3
-            dex = 3
         }
         //其他情况, 从left为true变为false的时候, 不需要进行改变index的操作, 因为动画animation是如下对应关系
         
@@ -49,18 +45,10 @@ export default function Carousel(props) {
     }
     //点击组件的右侧, banner向右滚动
     const rightClickDiv = () => {
-        console.log('right click')
-        console.log(dataStartIndex)
-        console.log(left)
-        console.log(index)
         //向右滚动, 如果当前位置不是bannerData的第一项, 那么 - 1 ; 如果是第一项, 那么需要设为bannerData的最后一项
 
         let bannerDataLength = bannerData.length;
-        console.log(bannerData.length, '数据长度')
-        console.log(dataStartIndex >= 0 && dataStartIndex < bannerDataLength - 1)
         if (dataStartIndex >= 0 && dataStartIndex < bannerDataLength - 1) {
-            console.log('进入比较')
-            console.log(dataStartIndex)
             setDataStartIndex(dataStartIndex + 1)
         } else {
             setDataStartIndex(0)
@@ -93,22 +81,17 @@ export default function Carousel(props) {
         }
         //其他情况, 从left为true变为false的时候, 不需要进行改变index的操作,
         setIndex(dex.toString())
-        console.log(dex)
-        console.log(left)
         setLeft(false)
     }
     //index会变, 如果当前没有处于hover状态, 那么继续原先的timer
     useEffect(() => {
-        if(bannerData.length > 0) {
-            //加上对bannerData的判断, 是为了防止第一个进入该页面, 但数据还没有传过来的时候, 会对数据筛选产生影响
-            if (!isHover) {
-                timer = setTimeout(rightClickDiv, 3000);
-            }
-            return () => {
-                timer && clearTimeout(timer)
-            }
+        if (!isHover) {
+            timer = setTimeout(leftClickDiv, 3000);
         }
-    }, [index, bannerData])
+        return () => {
+            timer && clearTimeout(timer)
+        }
+    }, [index])
     //清除定时器
     const clearMyTimer = () => {
         setIsHover(true)
@@ -117,7 +100,7 @@ export default function Carousel(props) {
     //创建定时器
     const createMyTimer = () => {
         setIsHover(false)
-        timer = setTimeout(rightClickDiv, 3000);
+        timer = setTimeout(leftClickDiv, 3000);
     }
 
     //截取数组数据 例如arr = [1, 2, 3, 4, 5, 6], start = 4; num = 3; 那么type为1: 返回数据为[5, 6, 1], type: 2 返回数据 [1, 5, 6];
@@ -173,7 +156,9 @@ export default function Carousel(props) {
 
     useEffect(() => {
         if ((bannerData instanceof Array) && bannerData.length >= 3) {
+            // let surplusData = bannerData.slice(0, 3);
             let newBannerData = JSON.parse(JSON.stringify(bannerData));
+            // newBannerData = newBannerData.concat(surplusData);
             // let newActiveBannerData = newBannerData.slice(dataStartIndex, dataStartIndex + 4)
             //截取数据
             let newActiveBannerData = sliceArr(newBannerData, dataStartIndex);

@@ -1,4 +1,6 @@
 import c_fetch from './fetch';
+import Tools from '../Utils/Tools'
+
 
 c_fetch.interceptors.request.use(
   function(url, config) {
@@ -17,9 +19,12 @@ c_fetch.interceptors.request.use(
 c_fetch.interceptors.response.use(function(res) {
   if(res.status == 301) {
     console.log('需要重新登录')
+    console.log(res)
     //这里可以reject, 不返回数据
+    Tools.push('/')
+  }else {
+    return res;
   }
-  return res;
 });
 
 const request = () => {

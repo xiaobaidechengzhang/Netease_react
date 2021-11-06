@@ -51,8 +51,6 @@ export default function Login(props) {
             phone: phone,
         }
         let data = await HTTPUtils.captcha_sent(params);
-        console.log(data)
-        console.log(data)
         setIsonsendcode(true)
         setSendcodeMil(sendCodeMil)
     }
@@ -148,6 +146,8 @@ export default function Login(props) {
             timestamp: Date.now()
         }
         let data = await HTTPUtils.login(params);
+        console.log('邮箱登录')
+        console.log(data);
         document.cookie = data.cookie;//登录以后, 要存储cookie, 为的是保持登录状态, 请求需要登录的接口
         props.history.push('/home')
     }

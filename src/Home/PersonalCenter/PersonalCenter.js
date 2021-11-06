@@ -70,7 +70,7 @@ function PersonalCenter(props) {
   };
   //获取用户关注列表
   const getUserFollows = async () => {
-    if (!profile.userId) {
+    if (!profile || !profile.userId) {
       return false;
     }
     let params = {
@@ -82,7 +82,7 @@ function PersonalCenter(props) {
   };
   //获取用户粉丝列表
   const getUserFolloweds = async () => {
-    if (!profile.userId) {
+    if (!profile || !profile.userId) {
       return false;
     }
     let params = {
@@ -94,7 +94,7 @@ function PersonalCenter(props) {
   };
   //获取用户动态列表
   const getUserEvent = async () => {
-    if (!profile.userId) {
+    if ( !profile || !profile.userId) {
       return false;
     }
     let params = {
@@ -105,7 +105,7 @@ function PersonalCenter(props) {
   };
   //获取用户歌单
   const getUserPlaylists = async () => {
-    if (!profile.userId) {
+    if (!profile || !profile.userId) {
       return false;
     }
     let params = {
@@ -293,7 +293,7 @@ function PersonalCenter(props) {
       <div className="personal-center-header">
         <div className="header-head-picture">
           <img
-            src={profile.avatarUrl}
+            src={profile && profile.avatarUrl}
             // src={profile.avatarUrl + "?param=180y180"}
             alt="http://p1.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg?param=180y180"
             className="head-picture-img"
@@ -304,7 +304,7 @@ function PersonalCenter(props) {
         </div>
         <div className="header-detail-desc">
           <div className="header-desc-name-lv">
-            <span className="desc-name">{profile.nickname}</span>
+            <span className="desc-name">{profile && profile.nickname}</span>
             <span className="desc-lv">LV.{userLV.level}</span>
             <span className="desc-edit">编辑个人资料</span>
           </div>

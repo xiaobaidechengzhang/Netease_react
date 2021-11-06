@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Artists.less";
 import HTTPUtils from "../../HTTPUtils/HTTPUtils";
 import { withRouter } from "react-router";
+import { Pagination } from 'antd'
 
 function Artists(props) {
   const artistsRef = useRef();
@@ -86,6 +87,9 @@ function Artists(props) {
   const [activeArea, setActiveArea] = useState("-1"); //当前active的歌手语种
   const [activeCat, setActiveCat] = useState("-1"); //当前active的歌手筛选
   const [artistsData, setArtistsData] = useState([]); //歌手分类列表数据
+  const [hasMoreData, setHasMoreData] = useState(true);//是否还有更多歌手数据
+  const [arriveBottom, setArriveBottom] = useState(false);//是否到达底部
+  const [dataPage, setDataPage] = useState(1);//当前页数
 
   /**
    * 
@@ -93,7 +97,8 @@ function Artists(props) {
    * @param {Number} type : 1为语种; 2位性别和组合; 3为歌手首字母筛选
    */
   const selectCatItem = (id, type) => {
-    switch(type) {
+    setDataPage(1)
+    switch (type) {
       case 1:
         setActiveArea(id);
         break;
@@ -110,7 +115,14 @@ function Artists(props) {
 
   const getArtistsList = async (obj) => {
     let data = await HTTPUtils.artist_list(obj);
-    setArtistsData(data.artists)
+    //如果当前数据是第一页, 直接将数据赋给artistsData
+    if (!hasMoreData) {
+      return;
+    }
+    let artists = dataPage == 1 ? data.artists : artistsData.concat(data.artists);
+    setArtistsData(artists)
+    setHasMoreData(data.more)
+    setArriveBottom(false)
   }
   //依赖项语种, 男/女/组合, 每次点击都要重新获取数据
   useEffect(async () => {
@@ -118,19 +130,21 @@ function Artists(props) {
       area: activeArea,
       type: activeType,
       initial: activeCat,
+      offset: (dataPage - 1) * 40,
+      limit: 40
     }
     await getArtistsList(obj)
-  }, [activeArea, activeType, activeCat])
+  }, [activeArea, activeType, activeCat, dataPage])
   //依赖项歌手数据, 每个更新数据, 都要为每个img添加懒加载, 
   useEffect(() => {
     let imgs = document.querySelectorAll('.artistsListItemImg');
     imgs.forEach((item, index) => {
       let dataSrc = item.getAttribute('data-imgurl');
-      if(item.src != dataSrc) {
+      if (item.src != dataSrc) {
         let offsetTop = item.offsetTop;
         let clientHeight = window.innerHeight;
         let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        if(offsetTop < (clientHeight + scrollTop - 100)) {
+        if (offsetTop < (clientHeight + scrollTop - 100)) {
           item.src = dataSrc;
         }
       }
@@ -141,31 +155,78 @@ function Artists(props) {
   /**
    * 歌手列表系列事件
    */
+  //进入歌手详情页面
   const navigateDetail = (item) => {
     console.log(props);
     console.log(item);
     props.history.push('/artist/' + item.id)
   }
 
+  //依赖 arriveBottom 到达底部 会获取更多数据
+  //逻辑 将当前获取数据页数+1, 会触发相关依赖, 获取更多数据
+  useEffect(() => {
+    if (arriveBottom) {
+      setDataPage(dataPage + 1)
+    }
+  }, [arriveBottom])
 
-  //滚动加载图片
-  window.onscroll = () => {
-    //首先将真实图片url添加到data-imgurl中, 通过判断距离, 来将真实url, 添加到src中, 实现懒加载
-    if(artistsRef) {
-      let imgs = document.querySelectorAll('.artistsListItemImg');
-      imgs.forEach((item, index) => {
-        let dataSrc = item.getAttribute('data-imgurl');
-        if(item.src != dataSrc) {
-          let offsetTop = item.offsetTop;
-          let clientHeight = window.innerHeight;
-          let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-          if(offsetTop < (clientHeight + scrollTop - 100)) {
-            item.src = dataSrc;
-          }
-        }
-      })
+  //
+  const throttle = (func, delay) => {
+    let isValid = false;
+    return function() {
+      if (isValid) {
+        return;
+      }
+      isValid = true;
+      setTimeout(() => {
+        func();
+        isValid = false
+      }, delay)
     }
   }
+
+  const handleArriveBottomLoadMoreData = () => {
+    if(artistsRef.current) {
+      const { height } = artistsRef.current.getBoundingClientRect();
+      //artistRef当前垂直滚动距离
+      let scrollTop = artistsRef.current.scrollTop;
+      //artistRef滚动高度
+      let scrollHeight = artistsRef.current.scrollHeight;
+      if (height + scrollTop > scrollHeight - 200) {
+        setArriveBottom(true)
+      }
+    }
+  }
+
+  //依赖  第一次加载页面
+  useEffect(() => {
+
+    //滚动加载图片
+    if (artistsRef.current) {
+      artistsRef.current.addEventListener('scroll', throttle(handleArriveBottomLoadMoreData, 500))
+      artistsRef.current.addEventListener('scroll', function () {
+        //artistRef的高度
+        const { height } = artistsRef.current.getBoundingClientRect();
+        //artistRef当前垂直滚动距离
+        let scrollTop = artistsRef.current.scrollTop;
+        //artistRef滚动高度
+        //首先将真实图片url添加到data-imgurl中, 通过判断距离, 来将真实url, 添加到src中, 实现懒加载
+        let imgs = document.querySelectorAll('.artistsListItemImg');
+        imgs.forEach((item, index) => {
+          let dataSrc = item.getAttribute('data-imgurl');
+          if (item.src != dataSrc) {
+            //图片距离
+            let offsetTop = item.offsetTop;
+            if (offsetTop < (height + scrollTop - 100)) {
+              item.src = dataSrc;
+            }
+          }
+        })
+      })
+    }
+  }, [])
+
+
   return (
     <div
       className='artists'
@@ -177,16 +238,15 @@ function Artists(props) {
           <div className="itemOptionsRow itemOptionsRowRight">
             {areas.map((item, index) => {
               return (
-                <span key={item.id+'_'+index} className="artistItemContainer">
+                <span key={item.id + '_' + index} className="artistItemContainer">
                   <span
-                    className={`${
-                      activeArea == item.id ? "activeItem" : ""
-                    } artistItem`}
-                    onClick={() =>selectCatItem(item.id, 1)}
+                    className={`${activeArea == item.id ? "activeItem" : ""
+                      } artistItem`}
+                    onClick={() => selectCatItem(item.id, 1)}
                   >
                     {item.name}
                   </span>
-                  {index!= areas.length-1 ? <span style={{padding: '0 10px'}}>|</span> : null}
+                  {index != areas.length - 1 ? <span style={{ padding: '0 10px' }}>|</span> : null}
                 </span>
               );
             })}
@@ -197,16 +257,15 @@ function Artists(props) {
           <div className="itemOptionsRow itemOptionsRowRight">
             {types.map((item, index) => {
               return (
-                <span key={item.id+'_'+index} className="artistItemContainer">
+                <span key={item.id + '_' + index} className="artistItemContainer">
                   <span
-                    className={`${
-                      activeType == item.id ? "activeItem" : ""
-                    } artistItem`}
-                    onClick={() =>selectCatItem(item.id, 2)}
+                    className={`${activeType == item.id ? "activeItem" : ""
+                      } artistItem`}
+                    onClick={() => selectCatItem(item.id, 2)}
                   >
                     {item.name}
                   </span>
-                  {index!= types.length-1 ? <span style={{padding: '0 10px'}}>|</span> : null}
+                  {index != types.length - 1 ? <span style={{ padding: '0 10px' }}>|</span> : null}
                 </span>
               );
             })}
@@ -217,17 +276,16 @@ function Artists(props) {
           <div className="itemOptionsRow itemOptionsRowRight">
             {cats.map((item, index) => {
               return (
-                <span key={item.id+'_'+index} className="artistItemContainer">
+                <span key={item.id + '_' + index} className="artistItemContainer">
                   <span
                     key={item.id}
-                    className={`${
-                      activeCat == item.id ? "activeItem" : ""
-                    } artistItem`}
-                    onClick={() =>selectCatItem(item.id, 3)}
+                    className={`${activeCat == item.id ? "activeItem" : ""
+                      } artistItem`}
+                    onClick={() => selectCatItem(item.id, 3)}
                   >
                     {item.name}
                   </span>
-                  {index!= cats.length-1 ? <span style={{padding: '0 10px'}}>|</span> : null}
+                  {index != cats.length - 1 ? <span style={{ padding: '0 10px' }}>|</span> : null}
                 </span>
               );
             })}
@@ -241,7 +299,7 @@ function Artists(props) {
           artistsData.map((item, index) => {
             return (
               <div
-                key={item.id+'_'+index}
+                key={item.id + '_' + index}
                 className='artistsListItem'
                 onClick={() => navigateDetail(item)}
               >
@@ -249,7 +307,7 @@ function Artists(props) {
                   <img
                     className='artistsListItemImg'
                     src=''
-                    data-imgurl={item.picUrl+'?param=280y280'}
+                    data-imgurl={item.picUrl + '?param=280y280'}
                   />
                 </div>
                 <div>

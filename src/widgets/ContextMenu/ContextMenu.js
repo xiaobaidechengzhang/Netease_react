@@ -105,7 +105,7 @@ function ContextMenu(props) {
         break;
       case '3':
         console.log('歌曲 专辑');
-        // props.history.push('/playlist/'+props.data.al.id)
+        props.history.push('/album/'+props.data.al.id)
         break;
       case '4':
         console.log('歌曲 歌手');

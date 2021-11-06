@@ -548,7 +548,7 @@ function ArtistDetail(props) {
     return (
       <div className="mv-list">
         <div className="mv-list-item-container">
-          <div className="mv-list-item is_mv">
+          <div className="mv-list-item is_mv" data-mv={item.id}>
             <img
               src={item.imgurl + "?param=200y200"}
               className="list-item-img"

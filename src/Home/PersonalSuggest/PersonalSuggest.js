@@ -79,8 +79,9 @@ function PersonalSuggest(props) {
     }
     let list = data.banners;
     let len = list.length;
-    let loopCount = Math.floor(len/3);
-    list.length = loopCount * 3;
+    // let loopCount = Math.floor(len/3);
+    // list.length = loopCount * 3;
+    list.length = 9
     setBannerData(list);
   };
   /**
@@ -99,9 +100,9 @@ function PersonalSuggest(props) {
     await getPersonlizedPrivatecontentList();
     await getBanner();
     await getPersonlizedMV();
-    let data = await HTTPUtils.login_status();
     console.log('登录状态');
-    console.log(data);
+    // let data = await HTTPUtils.login_status();
+    // console.log(data);
   }, []);
   /**
    * 需要登录

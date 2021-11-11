@@ -67,6 +67,7 @@ export default function AudioSlider(props) {
   //   setIsReset(true)
   // }, [props.duration]);
   useEffect(() => {
+    console.log('audio slider')
     setValue(props.value)
   }, [props.value])
   return (

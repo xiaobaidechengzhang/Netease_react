@@ -12,7 +12,6 @@ export default function Carousel(props) {
     const [activeBannerData, setActiveBannerData] = useState([]);//当前显示的banner数据
     //点击组件的左侧, banner向左滚动
     const leftClickDiv = () => {
-        console.log('left click')
         //向左滚动, 如果当前位置不是bannerData的最后项, 那么 + 1 ; 如果是第一项, 那么需要设为bannerData的第一项
 
         let bannerDataLength = bannerData.length;
@@ -38,29 +37,20 @@ export default function Carousel(props) {
             } else {
                 dex = 1;
             }
-        }else if(left && dex == '0') {
+        }else if(!left && dex == '0') {
             //第一次进入页面, 此时index还处于0, 且left为true的时候, 此时需要将index设为3
-            dex = 3
+            dex = 1
         }
         //其他情况, 从left为true变为false的时候, 不需要进行改变index的操作, 因为动画animation是如下对应关系
-        
         setIndex(dex.toString())
         setLeft(true)
     }
     //点击组件的右侧, banner向右滚动
     const rightClickDiv = () => {
-        console.log('right click')
-        console.log(dataStartIndex)
-        console.log(left)
-        console.log(index)
         //向右滚动, 如果当前位置不是bannerData的第一项, 那么 - 1 ; 如果是第一项, 那么需要设为bannerData的最后一项
 
         let bannerDataLength = bannerData.length;
-        console.log(bannerData.length, '数据长度')
-        console.log(dataStartIndex >= 0 && dataStartIndex < bannerDataLength - 1)
         if (dataStartIndex >= 0 && dataStartIndex < bannerDataLength - 1) {
-            console.log('进入比较')
-            console.log(dataStartIndex)
             setDataStartIndex(dataStartIndex + 1)
         } else {
             setDataStartIndex(0)
@@ -87,14 +77,14 @@ export default function Carousel(props) {
             } else {
                 dex = 3;
             }
-        }else if(left && dex == '0') {
+        }else if(left) {
             //第一次进入页面, 此时index还处于0, 且left为true的时候, 此时需要将index设为3
-            dex = 3
+            if(dex == 0) {
+                dex = 3
+            }
         }
         //其他情况, 从left为true变为false的时候, 不需要进行改变index的操作,
         setIndex(dex.toString())
-        console.log(dex)
-        console.log(left)
         setLeft(false)
     }
     //index会变, 如果当前没有处于hover状态, 那么继续原先的timer
@@ -108,7 +98,7 @@ export default function Carousel(props) {
                 timer && clearTimeout(timer)
             }
         }
-    }, [index, bannerData])
+    }, [index, bannerData, left])
     //清除定时器
     const clearMyTimer = () => {
         setIsHover(true)

@@ -105,7 +105,17 @@ function ContextMenu(props) {
         break;
       case '3':
         console.log('歌曲 专辑');
-        props.history.push('/album/'+props.data.al.id)
+        console.log(props.data)
+        let albumID = props.data.al ? props.data.al.id : '';
+        try {
+          //歌单中歌曲专辑信息为props.data.al, 专辑中为props.data.song.album
+          if(props.data.hasOwnProperty('song') && props.data.song.hasOwnProperty('album')) {
+            albumID = props.data.song.album ? props.data.song.album.id : albumID;
+          }
+        } catch(e) {
+
+        }
+        props.history.push('/album/'+albumID)
         break;
       case '4':
         console.log('歌曲 歌手');

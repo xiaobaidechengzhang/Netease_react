@@ -44,6 +44,7 @@ export default function BasicSlider(props) {
 
   //props.value变化
   useEffect(() => {
+    console.log('props value', props.value)
     setBackWidth(props.value);
     setSliderRoundLeft(props.value);
   }, [props.value])
@@ -159,6 +160,7 @@ export default function BasicSlider(props) {
           top: "50%",
           transform: "translateY(-50%)",
           left: sliderRoundLeft,
+          zIndex: 999
         }}
       ></div>
     </div>

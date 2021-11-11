@@ -350,10 +350,11 @@ function ArtistDetail(props) {
     return (
       <ul
         // className={`content-header fontsize18 canSelectItem`}
-        className={`content-header fontsize18 is_song canSelectItem ${(parseInt(index) - 1) % 2 == 0 ? "backGray" : ""
+        // className={`content-header fontsize18 is_song canSelectItem ${(parseInt(index) - 1) % 2 == 0 ? "backGray" : ""
+        className={`content-header fontsize18 canSelectItem ${(parseInt(index) - 1) % 2 == 0 ? "backGray" : ""
           }`}
         tabIndex="1"
-        data-song={JSON.stringify(item)}
+        // data-song={JSON.stringify(item)}
       >
         <li className="content-header-item flex6">
           <ul className="item-flex">
@@ -444,6 +445,8 @@ function ArtistDetail(props) {
   };
   //渲染--专辑列表--列表模式-item
   const ListModalItem = ({ item, index }) => {
+    console.log('列表模式')
+    console.log(item)
     return (
       <li
         className={`listModal-list-item is_ablum canSelectItem ${index % 2 == 0 ? "backGray" : ""

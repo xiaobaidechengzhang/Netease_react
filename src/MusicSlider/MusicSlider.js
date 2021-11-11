@@ -229,6 +229,7 @@ function MusicSlider(props) {
    */
   //ownAudioRef每次更新progress
   const handleAudioUpdate = () => {
+    console.log('audio time update')
     let audioCurrent = ownAudioRef.current;
     let audioTime = audioCurrent.currentTime;
     let percent =
@@ -242,7 +243,12 @@ function MusicSlider(props) {
     let audioDuration = audioCurrent.duration;
     let time = (audioDuration * percent) / 100;
     percent += "%";
-    audioCurrent.currentTime = time;
+    console.log('time', time)
+    try {
+      audioCurrent.currentTime = time;
+    } catch(e) {
+      console.log('error: ', e)
+    }
     setCurrentAudioTime(percent);
   };
 

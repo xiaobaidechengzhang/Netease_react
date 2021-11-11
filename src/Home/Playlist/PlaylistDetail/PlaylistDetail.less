@@ -61,6 +61,11 @@ ul, li, p {
     .marginVer10 {
       margin: 10px 0;
     }
+    .inlineFlexCenter {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center
+    }
     .defineBtn {
       background-color: transparent;
       border: 1px solid @commonBorderColor;
@@ -190,8 +195,9 @@ ul, li, p {
         .content-header-item {
           height: 100%;
           .item-flex {
-            display: flex;
-            flex-wrap: wrap;
+            display: inline-flex;
+            flex-wrap: nowrap;
+            justify-content: center;
             align-items: center;
             .header-item-right {
               display: flex; 

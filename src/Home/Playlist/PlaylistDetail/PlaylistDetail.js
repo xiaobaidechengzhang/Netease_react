@@ -345,6 +345,8 @@ function PlaylistDetail(props) {
     index += 1;
     index = index < 10 ? "0" + index : index;
     let activeId = props.activeSong?.data?.id ? props.activeSong?.data?.id : null;
+    console.log('歌单列表')
+    console.log(data)
     return (
       <ul
         data-song={JSON.stringify(data)}
@@ -585,25 +587,25 @@ function PlaylistDetail(props) {
               {exchangeTime(basicData.createTime, 1)}创建
             </span>
           </div>
-          <div className="headerPadding5 header-right-row ">
-            <button className="defineBtn border-radius-20 headerPadding5 bkCommonColor marginVer5 whiteCol" onClick={addPlaylist}>
+          <div className="headerPadding5 header-right-row  inlineFlexCenter">
+            <button className="inlineFlexCenter defineBtn border-radius-20 headerPadding5 bkCommonColor marginVer5 whiteCol" onClick={addPlaylist}>
               <img src={PlayPng} className="img25 marginHon5" />
               <span className="height25Vertical padding5">播放全部</span>
               <img src={AddWhitePng} className="img25 marginHon5" onClick={(event) => addAllSongToPlaylist(event)}/>
             </button>
-            <button className="defineBtn border-radius-20 headerPadding5 marginVer " onClick={subcribePlaylist}>
+            <button className="inlineFlexCenter defineBtn border-radius-20 headerPadding5 marginVer " onClick={subcribePlaylist}>
               <img src={SubPng} className="img25 " />
               <span className="height25Vertical padding5">
                 收藏({subcribersTotalCount})
               </span>
             </button>
-            <button className="defineBtn border-radius-20 headerPadding5 marginVer">
+            <button className="inlineFlexCenter defineBtn border-radius-20 headerPadding5 marginVer">
               <img src={ShareRound} className="img25 " />
               <span className="height25Vertical padding5">
                 分享({basicData.shareCount})
               </span>
             </button>
-            <button className="defineBtn border-radius-20 headerPadding5 marginVer">
+            <button className="inlineFlexCenter defineBtn border-radius-20 headerPadding5 marginVer">
               <img src={DownloadPng} className="img25 " />
               <span className="height25Vertical padding5">下载全部</span>
             </button>

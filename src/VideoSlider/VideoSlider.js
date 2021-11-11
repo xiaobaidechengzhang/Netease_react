@@ -99,17 +99,21 @@ export default function VideoSlider(props) {
    */
   //事件--处理video时间变化事件--用于处理slider拖动/跳转某一时间后, 更新video的事件
   const handleVideoTimeChange = (time) => {
+    console.log('handle video time change')
     console.log(time);
     let duration = videoSliderRef.current.duration;
     console.log(duration * parseInt(time) / 100);
     videoSliderRef.current.currentTime = duration * parseInt(time) / 100
+    setCurrentVideoTimePercent(time+'%')
+
   }
   //事件--video播放后, 当前事件更新的事件, 用于更新slider的currentTime
   const handleVideoTimeUpdateChange = () => {
     let myVideo = videoSliderRef.current;
     let duration = myVideo.duration;
     let currentTime = myVideo.currentTime;
-    let percent = Math.floor(currentTime / duration * 100) + '%'
+    //不能用Math.floor, 因为当duration时长很大的时候, percent总是为0
+    let percent = parseFloat(currentTime / duration * 100).toFixed(4) + '%';
     setCurrentVideoTimePercent(percent)
   }
   //
@@ -121,7 +125,9 @@ export default function VideoSlider(props) {
     if (isNaN(duration) || (duration != 0 && !duration)) {
       setCurrentVideoTime('00:00')
     } else {
-      let time = parseInt(currentVideoTimePercent) * duration * 10;//获取毫秒数
+      // let time = parseInt(currentVideoTimePercent) * duration * 10;//获取毫秒数
+      //不能用parseInt, 因为currentVideoTimePercent有四位小数
+      let time = parseFloat(currentVideoTimePercent).toFixed(4) * duration * 10;//获取毫秒数
       setCurrentVideoTime(exchangeDuration(time))
     }
   }, [currentVideoTimePercent])

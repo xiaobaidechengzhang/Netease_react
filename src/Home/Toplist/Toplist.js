@@ -51,8 +51,6 @@ function Toplist(props) {
    * 进入榜单详情
    */
   const navigateDetail = (item) => {
-    console.log('navigate detail')
-    console.log(item);
     props.history.push("/playlist/"+item.id)
   }
 
@@ -96,9 +94,10 @@ function Toplist(props) {
                       <div
                         key={zItem.id}
                         tabIndex='1'
-                        className={`topFiveItem ${
+                        className={`topFiveItem is_song ${
                           zIndex % 2 == 0 ? "topFiveItemIndex" : ""
                         }`} 
+                        data-song={JSON.stringify(zItem)}
                       >
                         <div>
                           <span
